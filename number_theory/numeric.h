@@ -13,7 +13,7 @@ using std::gcd;
 using std::lcm;
 
 // Extended Euclidean algorithm.
-// Given two numbers a and b, returns a pair (x, y) satisfying
+// Given two numbers |a| and |b|, returns a pair (x, y) satisfying
 // x*a + y*b == gcd(a,b).
 template <class T>
 std::pair<T, T> exgcd(T a, T b) {
