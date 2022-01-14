@@ -30,6 +30,20 @@ U binary_accumulate(T binary,
   return result;
 }
 
+// Returns the number of bits of an integer.
+template <class T>
+constexpr std::size_t bit_length(T number) {
+  static_assert(std::numeric_limits<T>::is_integer,
+                "bit_length argument must be an integer.");
+  T current = number;
+  std::size_t length = 0;
+  while (current != 0) {
+    current /= 2;
+    ++length;
+  }
+  return length;
+}
+
 }  // namespace number_theory
 
 #endif  // NUMBER_THEORY_UTILITY_H_
