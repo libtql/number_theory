@@ -20,8 +20,7 @@ constexpr bool is_prime(T number) {
   // There are no prime numbers smaller than 2.
   if (number < 2)
     return false;
-  int sqrt_number = static_cast<int>(sqrt(number));
-  for (int i = 2; i <= sqrt_number; ++i) {
+  for (int i = 2; i * i <= number; ++i) {
     if (number % i == 0)
       return false;
   }
