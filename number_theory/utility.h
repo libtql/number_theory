@@ -38,9 +38,7 @@ template <class T>
 constexpr std::size_t bit_length(T number) {
   static_assert(std::numeric_limits<T>::is_integer,
                 "bit_length argument must be an integer.");
-  using Unsigned_T = std::make_unsigned_t<T>;
-  Unsigned_T abs_number = std::abs(number);
-  return std::numeric_limits<Unsigned_T>::digits - std::countl_zero(abs_number);
+  return std::bit_width(number);
 }
 
 }  // namespace number_theory
