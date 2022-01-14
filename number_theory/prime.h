@@ -2,20 +2,26 @@
 #define NUMBER_THEORY_PRIME_H_
 
 #include <limits>
+#include <type_traits>
 
 // This file contains functions related to prime numbers.
 
 namespace number_theory {
 
-// Returns true if |number| is prime.
-template <class T>
-bool is_prime(T number) {
-  static_assert(std::numeric_limits<T>::is_integer,
-                "is_prime argument must be an integer.");
+// Tests whether |number| is prime or not.
+//
+// This overload is only available for numbers smaller than 2^16 since it
+// performs poorly for large numbers.
+template <class T,
+          std::enable_if_t<std::numeric_limits<T>::is_integer &&
+                               std::numeric_limits<T>::digits <= 16,
+                           bool> = true>
+constexpr bool is_prime(T number) {
   // There are no prime numbers smaller than 2.
   if (number < 2)
     return false;
-  for (T i = 2; i * i <= number; ++i) {
+  int sqrt_number = static_cast<int>(sqrt(number));
+  for (int i = 2; i <= sqrt_number; ++i) {
     if (number % i == 0)
       return false;
   }
