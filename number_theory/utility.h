@@ -9,6 +9,7 @@
 
 // Public utility functions.
 
+namespace tql {
 namespace number_theory {
 
 // Accumulates values according to the binary representation of |binary|.
@@ -44,5 +45,6 @@ constexpr std::size_t bit_length(T number) {
 }
 
 }  // namespace number_theory
+}  // namespace tql
 
 #endif  // NUMBER_THEORY_UTILITY_H_

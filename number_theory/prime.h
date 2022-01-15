@@ -6,6 +6,7 @@
 
 // This file contains functions related to prime numbers.
 
+namespace tql {
 namespace number_theory {
 
 // Tests whether |number| is prime or not.
@@ -28,5 +29,6 @@ constexpr bool is_prime(T number) {
 }
 
 }  // namespace number_theory
+}  // namespace tql
 
 #endif  // NUMBER_THEORY_PRIME_H_

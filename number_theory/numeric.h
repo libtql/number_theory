@@ -12,6 +12,7 @@
 
 // Common numeric functions.
 
+namespace tql {
 namespace number_theory {
 
 using std::gcd;
@@ -88,5 +89,6 @@ auto pow(T base, U exponent) -> decltype(std::pow(base, exponent)) {
 }
 
 }  // namespace number_theory
+}  // namespace tql
 
 #endif  // NUMBER_THEORY_NUMERIC_H_
