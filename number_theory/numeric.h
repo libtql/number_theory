@@ -1,6 +1,7 @@
 #ifndef NUMBER_THEORY_NUMERIC_H_
 #define NUMBER_THEORY_NUMERIC_H_
 
+#include <cmath>
 #include <functional>
 #include <limits>
 #include <numeric>
