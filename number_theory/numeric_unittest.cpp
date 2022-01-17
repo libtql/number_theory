@@ -1,6 +1,7 @@
 #include <stdint.h>
 
 #include <cmath>
+#include <limits>
 #include <random>
 
 #include <gtest/gtest.h>
@@ -21,8 +22,8 @@ void test_exgcd(T a, T b) {
 }
 
 TEST(NumericTest, Exgcd) {
-  for (int a = 0; a <= 100; ++a)
-    for (int b = 0; b <= 100; ++b) {
+  for (int a = -100; a <= 100; ++a)
+    for (int b = -100; b <= 100; ++b) {
       test_exgcd<int8_t>(a, b);
       test_exgcd<int16_t>(a, b);
       test_exgcd<int32_t>(a, b);
@@ -31,7 +32,8 @@ TEST(NumericTest, Exgcd) {
   // test large numbers
   std::random_device rand_device;
   std::default_random_engine rand_engine(rand_device());
-  std::uniform_int_distribution<int64_t> rand_gen;
+  std::uniform_int_distribution<int64_t> rand_gen(
+      std::numeric_limits<int64_t>::min(), std::numeric_limits<int64_t>::max());
   for (int i = 0; i < 1000; ++i) {
     int64_t a = rand_gen(rand_engine);
     int64_t b = rand_gen(rand_engine);
