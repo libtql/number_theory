@@ -46,6 +46,8 @@ std::pair<T, T> exgcd(T a, T b) {
     ta = tb, tb = tc;
   }
 
+  if (ta < 0)
+    return std::make_pair(-xa, -ya);
   return std::make_pair(xa, ya);
 }
 
