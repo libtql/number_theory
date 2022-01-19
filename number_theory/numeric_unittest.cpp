@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <limits>
+#include <numeric>
 #include <random>
 
 #include <gtest/gtest.h>
@@ -19,7 +20,7 @@ void test_exgcd(T a, T b) {
     ASSERT_LE(std::abs(x), std::abs(b));
     ASSERT_LE(std::abs(y), std::abs(a));
   }
-  ASSERT_EQ(x * a + y * b, gcd(a, b));
+  ASSERT_EQ(x * a + y * b, std::gcd(a, b));
 }
 
 TEST(NumericTest, ExGCD) {
