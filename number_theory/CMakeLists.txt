@@ -1,4 +1,9 @@
-# Add tests here
+# Add all tests
+set(SOURCES
+  numeric_unittest.cpp
+  # ... more
+)
+add_unittest(${SOURCES})
 
 # Expose to parent scope 
 expose_unittest()
