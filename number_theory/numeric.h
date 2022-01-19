@@ -89,6 +89,12 @@ auto pow(T base, U exponent) -> decltype(std::pow(base, exponent)) {
 }
 
 }  // namespace number_theory
+
+using number_theory::exgcd;
+using number_theory::gcd;
+using number_theory::lcm;
+using number_theory::pow;
+
 }  // namespace tql
 
 #endif  // NUMBER_THEORY_NUMERIC_H_
