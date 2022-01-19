@@ -29,6 +29,9 @@ constexpr bool is_prime(T number) {
 }
 
 }  // namespace number_theory
+
+using number_theory::is_prime;
+
 }  // namespace tql
 
 #endif  // NUMBER_THEORY_PRIME_H_
