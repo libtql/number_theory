@@ -7,6 +7,9 @@ set(CMAKE_CXX_STANDARD 20)
 # Always build tests with debug info
 set(CMAKE_BUILD_TYPE Debug)
 
+# Generate the compilation database
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # Find GoogleTest
 find_package(GTest REQUIRED)
 include(GoogleTest)
