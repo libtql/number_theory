@@ -3,6 +3,7 @@
 
 #include <functional>
 #include <limits>
+#include <type_traits>
 
 // Public utility functions.
 
@@ -29,6 +30,30 @@ U binary_accumulate(T binary,
     operation(bit, result);
   }
   return result;
+}
+
+// Returns the sign of the number |x|.
+// If x = 0, sign(x) = 0.
+// If x > 0, sign(x) = 1.
+// If x < 0, sign(x) = -1.
+template <class T>
+constexpr int sign(T x) {
+  if (x == 0)
+    return 0;
+  return x > 0 ? 1 : -1;
+}
+
+// Returns the absolute value of the integer |x| in an unsigned type.
+//
+// This can be useful because std::abs doesn't support unsigned integers, and
+// std::abs(std::numeric_limits<T>::min()) is undefined.
+template <class T>
+constexpr std::make_unsigned_t<T> unsigned_abs(T x) {
+  static_assert(std::numeric_limits<T>::is_integer,
+                "unsigned_abs argument |x| must be an integer.");
+
+  auto y = static_cast<std::make_unsigned_t<T>>(x);
+  return x < 0 ? -y : y;
 }
 
 }  // namespace number_theory

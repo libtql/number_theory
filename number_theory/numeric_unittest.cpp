@@ -17,8 +17,8 @@ void test_exgcd(T a, T b) {
   auto [x, y] = exgcd(a, b);
   if (a != 0 && b != 0) {
     // Bézout's identity
-    ASSERT_LE(std::abs(x), std::abs(b));
-    ASSERT_LE(std::abs(y), std::abs(a));
+    ASSERT_LE(unsigned_abs(x), unsigned_abs(b));
+    ASSERT_LE(unsigned_abs(y), unsigned_abs(a));
   }
   ASSERT_EQ(x * a + y * b, std::gcd(a, b));
 }
@@ -41,6 +41,13 @@ TEST(NumericTest, ExGCD) {
     int64_t b = rand_gen(rand_engine);
     test_exgcd(a, b);
   }
+  // test overflow
+  test_exgcd(std::numeric_limits<int>::min(), std::numeric_limits<int>::max());
+  test_exgcd(std::numeric_limits<int>::max(), std::numeric_limits<int>::min());
+  test_exgcd(std::numeric_limits<int>::max(), 1);
+  test_exgcd(std::numeric_limits<int>::min(), 1);
+  test_exgcd(1, std::numeric_limits<int>::max());
+  test_exgcd(1, std::numeric_limits<int>::min());
 }
 
 }  // namespace number_theory
