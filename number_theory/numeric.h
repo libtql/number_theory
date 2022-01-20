@@ -68,7 +68,7 @@ T pow(const T &base, U exponent) {
     power *= power;
   };
 
-  Unsigned_U abs_exp = std::abs(exponent);
+  Unsigned_U abs_exp = unsigned_abs(exponent);
   Pair_TT state = binary_accumulate<Unsigned_U, Pair_TT>(
       abs_exp, std::make_pair(1, base), update);
   T result = std::move(state.first);
