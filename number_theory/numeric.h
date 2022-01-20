@@ -27,16 +27,16 @@ std::pair<T, T> exgcd(T a, T b) {
       std::numeric_limits<T>::is_integer && std::numeric_limits<T>::is_signed,
       "exgcd arguments must be signed integers");
 
-  // xa * a + ya * b == ta
-  // xb * b + yb * b == tb
-  T ta = a, tb = b;
+  // xa * abs(a) + ya * abs(b) == ta
+  // xb * abs(b) + yb * abs(b) == tb
+  auto ta = unsigned_abs(a), tb = unsigned_abs(b);
   T xa = 1, ya = 0;
   T xb = 0, yb = 1;
 
   while (tb != 0) {
     T q = ta / tb;
 
-    // xc * a + yc * b == tc
+    // xc * abs(a) + yc * abs(b) == tc
     T tc = ta - q * tb;
     T xc = xa - q * xb;
     T yc = ya - q * yb;
@@ -46,9 +46,7 @@ std::pair<T, T> exgcd(T a, T b) {
     ta = tb, tb = tc;
   }
 
-  if (ta < 0)
-    return std::make_pair(-xa, -ya);
-  return std::make_pair(xa, ya);
+  return std::make_pair(sign(a) * xa, sign(b) * ya);
 }
 
 // Computes the value of |base| raised to an integer power |exponent|.
