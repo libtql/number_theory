@@ -40,6 +40,7 @@ template <class T>
 constexpr int sign(T x) {
   static_assert(std::numeric_limits<T>::is_integer,
                 "sign argument |x| must be an integer");
+
   if (x == 0)
     return 0;
   return x > 0 ? 1 : -1;
@@ -58,6 +59,7 @@ constexpr U unsigned_abs(T x) {
   static_assert(sizeof(U) >= sizeof(T),
                 "unsigned_abs result type must be "
                 "at least as wide as the input type.");
+
   U y = static_cast<U>(x);
   return x < 0 ? -y : y;
 }
