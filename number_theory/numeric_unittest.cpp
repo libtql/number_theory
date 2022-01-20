@@ -42,10 +42,10 @@ TEST(NumericTest, ExGCD) {
     test_exgcd(a, b);
   }
   // test overflow
-  test_exgcd<int32_t>(std::numeric_limits<int32_t>::min(),
-                      std::numeric_limits<int32_t>::max());
-  test_exgcd<int64_t>(std::numeric_limits<int64_t>::min(),
-                      std::numeric_limits<int64_t>::max());
+  test_exgcd(std::numeric_limits<int32_t>::min(),
+             std::numeric_limits<int32_t>::max());
+  test_exgcd(std::numeric_limits<int64_t>::min(),
+             std::numeric_limits<int64_t>::max());
 }
 
 }  // namespace number_theory
