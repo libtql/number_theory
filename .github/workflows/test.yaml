@@ -1,0 +1,19 @@
+name: test
+
+on: [pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run clang-format style check.
+        uses: jidicula/clang-format-action@v4.5.0
+      - name: Install cmake and ninja-build.
+        run: apt install cmake ninja-build
+      - name: Generate build files and compilation database.
+        run: cmake -B out -G Ninja
+      - name: Build unit tests.
+        run: ninja -C out
+      - name: Run unit tests.
+        run: out/unittest
