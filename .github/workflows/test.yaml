@@ -9,8 +9,8 @@ jobs:
       - uses: actions/checkout@v2
       - name: Run clang-format style check.
         uses: jidicula/clang-format-action@v4.5.0
-      - name: Install cmake and ninja-build.
-        run: sudo apt install -y cmake ninja-build
+      - name: Install CMake, Ninja, and GoogleTest.
+        run: sudo apt install -y cmake ninja-build libgtest-dev
       - name: Generate build files and compilation database.
         run: cmake -B out -G Ninja
       - name: Build unit tests.
