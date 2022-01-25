@@ -23,6 +23,8 @@ class Modular {
   static constexpr T modulus = mod;
 
  protected:
+  type value_;
+
   static constexpr size_t type_width = std::numeric_limits<T>::digits;
   static constexpr size_t modulus_width =
       std::bit_width(static_cast<std::make_unsigned_t<T>>(modulus));
@@ -38,9 +40,6 @@ class Modular {
         modulus_width * 2 <= type_width,
         "Modular multiplication may overflow. Please use larger integer types");
   }
-
- private:
-  type value_;
 
  public:
   Modular(type value = 0) { set(std::move(value)); }
