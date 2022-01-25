@@ -43,6 +43,8 @@ class Modular {
 
  public:
   Modular(type value = 0) { set(std::move(value)); }
+  Modular(const Modular &other) = default;
+  Modular(Modular &&other) = default;
 
   const type &get() const { return value_; }
 
@@ -51,6 +53,9 @@ class Modular {
     if (value_ < 0)
       value_ += modulus;
   }
+
+  Modular &operator=(const Modular &other) = default;
+  Modular &operator=(Modular &&other) = default;
 
   Modular add(const Modular &rhs) const {
     check_addition_overflow();
