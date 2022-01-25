@@ -22,6 +22,37 @@ class Modular {
   using type = T;
   static constexpr T modulus = mod;
 
+  Modular(type value = 0) { set(std::move(value)); }
+  Modular(const Modular &other) = default;
+  Modular(Modular &&other) = default;
+
+  Modular &operator=(const Modular &other) = default;
+  Modular &operator=(Modular &&other) = default;
+
+  const type &get() const { return value_; }
+
+  void set(type value) {
+    value_ = value % modulus;
+    if (value_ < 0)
+      value_ += modulus;
+  }
+
+  Modular add(const Modular &rhs) const {
+    check_addition_overflow();
+    return Modular((value_ + rhs.value_) % modulus);
+  }
+
+  Modular negate() const { return Modular(modulus - value_); }
+
+  Modular substract(const Modular &rhs) const { return add(rhs.negate()); }
+
+  Modular multiply(const Modular &rhs) const {
+    check_multiplication_overflow();
+    return Modular((value_ * rhs.value_) % modulus);
+  }
+
+  bool equal(const Modular &rhs) const { return value_ == rhs.value_; }
+
  protected:
   type value_;
 
@@ -40,38 +71,6 @@ class Modular {
         modulus_width * 2 <= type_width,
         "Modular multiplication may overflow. Please use larger integer types");
   }
-
- public:
-  Modular(type value = 0) { set(std::move(value)); }
-  Modular(const Modular &other) = default;
-  Modular(Modular &&other) = default;
-
-  const type &get() const { return value_; }
-
-  void set(type value) {
-    value_ = value % modulus;
-    if (value_ < 0)
-      value_ += modulus;
-  }
-
-  Modular &operator=(const Modular &other) = default;
-  Modular &operator=(Modular &&other) = default;
-
-  Modular add(const Modular &rhs) const {
-    check_addition_overflow();
-    return Modular((value_ + rhs.value_) % modulus);
-  }
-
-  Modular negate() const { return Modular(modulus - value_); }
-
-  Modular substract(const Modular &rhs) const { return add(rhs.negate()); }
-
-  Modular multiply(const Modular &rhs) const {
-    check_multiplication_overflow();
-    return Modular((value_ * rhs.value_) % modulus);
-  }
-
-  bool equal(const Modular &rhs) const { return value_ == rhs.value_; }
 };
 
 }  // namespace number_theory
