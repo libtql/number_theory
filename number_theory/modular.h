@@ -22,6 +22,8 @@ class Modular {
   using type = T;
   static constexpr T modulus = mod;
 
+  // This is an implicit constructor. We implicitly upgrade from T to Modular
+  // to make it easier to use.
   Modular(T value = 0) { set(std::move(value)); }
 
   Modular(const Modular &other) = default;
@@ -29,7 +31,8 @@ class Modular {
   Modular &operator=(const Modular &other) = default;
   Modular &operator=(Modular &&other) = default;
 
-  explicit operator T() const { return get(); }
+  // This is an implicit conversion, because we want a seamless conversion to T.
+  operator T() const { return get(); }
 
   const T &get() const { return value_; }
 
