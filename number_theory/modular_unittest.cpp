@@ -10,35 +10,40 @@ TEST(ModularTest, Basic) {
 
   // test constructors
   Mod10 a = 123;
-  EXPECT_EQ(a.get(), 3);
   Mod10 b = a;
-  EXPECT_EQ(b.get(), 3);
   Mod10 c;
-
-  // test conversions
-  EXPECT_EQ(static_cast<int>(a), 3);
-  EXPECT_EQ(static_cast<Mod10>(15).get(), 5);
+  EXPECT_EQ(a.get(), 3);
+  EXPECT_EQ(b.get(), 3);
+  EXPECT_EQ(c.get(), 0);
 
   // test assignments
   c = -1;
   EXPECT_EQ(c.get(), 9);
-  c = std::move(a);
-  EXPECT_EQ(c.get(), 3);
+  a = std::move(c);
+  EXPECT_EQ(a.get(), 9);
   a.set(-4);
   EXPECT_EQ(a.get(), 6);
 
+  // test conversions
+  a = 3;
+  EXPECT_EQ(static_cast<int>(a), 3);
+  EXPECT_EQ(static_cast<Mod10>(15).get(), 5);
+
   // test arithmetics
+  a = 6, b = 4;
   c = a.add(b);
-  EXPECT_EQ(c.get(), 9);
+  EXPECT_EQ(c.get(), 0);
   c = b.negate();
-  EXPECT_EQ(c.get(), 7);
+  EXPECT_EQ(c.get(), 6);
   c = b.substract(a);
-  EXPECT_EQ(c.get(), 7);
-  c = a.multiply(b);
   EXPECT_EQ(c.get(), 8);
+  c = a.multiply(b);
+  EXPECT_EQ(c.get(), 4);
 
   // test comparisons
   c = 3;
+  b = c;
+  a = 0;
   EXPECT_TRUE(b.equal(c));
   EXPECT_FALSE(a.equal(b));
 }
