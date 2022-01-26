@@ -15,6 +15,10 @@ TEST(ModularTest, Basic) {
   EXPECT_EQ(b.get(), 3);
   Mod10 c;
 
+  // test conversions
+  EXPECT_EQ(static_cast<int>(a), 3);
+  EXPECT_EQ(static_cast<Mod10>(15).get(), 5);
+
   // test assignments
   c = -1;
   EXPECT_EQ(c.get(), 9);

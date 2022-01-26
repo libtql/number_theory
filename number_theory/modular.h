@@ -29,6 +29,8 @@ class Modular {
   Modular &operator=(const Modular &other) = default;
   Modular &operator=(Modular &&other) = default;
 
+  explicit operator type() const { return get(); }
+
   const type &get() const { return value_; }
 
   void set(type value) {
