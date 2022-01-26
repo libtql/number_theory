@@ -50,7 +50,11 @@ class Modular {
     return Modular(new_value);
   }
 
-  Modular negate() const { return Modular(modulus - value_); }
+  Modular negate() const {
+    if (value_ == 0)
+      return *this;
+    return Modular(modulus - value_);
+  }
 
   Modular substract(const Modular &rhs) const { return add(rhs.negate()); }
 
