@@ -44,7 +44,10 @@ class Modular {
 
   Modular add(const Modular &rhs) const {
     check_addition_overflow();
-    return Modular((value_ + rhs.value_) % modulus);
+    type new_value = value_ + rhs.value_;
+    if (new_value >= modulus)
+      new_value -= modulus;
+    return Modular(new_value);
   }
 
   Modular negate() const { return Modular(modulus - value_); }
@@ -53,7 +56,7 @@ class Modular {
 
   Modular multiply(const Modular &rhs) const {
     check_multiplication_overflow();
-    return Modular((value_ * rhs.value_) % modulus);
+    return Modular(value_ * rhs.value_);
   }
 
   bool equal(const Modular &rhs) const { return value_ == rhs.value_; }
