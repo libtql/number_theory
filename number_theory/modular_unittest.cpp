@@ -1,3 +1,6 @@
+#include <stdint.h>
+
+#include <limits>
 #include <type_traits>
 
 #include <gtest/gtest.h>
@@ -7,49 +10,64 @@
 namespace tql {
 namespace number_theory {
 
-TEST(ModularTest, Basic) {
-  using Mod10 = Modular<int, 10>;
-  static_assert(std::is_same<Mod10::type, int>::value);
-  static_assert(Mod10::modulus == 10);
+template <class T>
+void test_modular_basic() {
+  using Mod10 = Modular<T, T(10)>;
+  static_assert(std::is_same<typename Mod10::type, T>::value);
+  static_assert(Mod10::modulus == T(10));
 
   // test constructors
-  Mod10 a = 123;
+  Mod10 a = T(123);
   Mod10 b = a;
   Mod10 c;
-  EXPECT_EQ(a.get(), 3);
-  EXPECT_EQ(b.get(), 3);
-  EXPECT_EQ(c.get(), 0);
+  EXPECT_EQ(a.get(), T(3));
+  EXPECT_EQ(b.get(), T(3));
+  EXPECT_EQ(c.get(), T(0));
 
   // test assignments
-  c = -1;
-  EXPECT_EQ(c.get(), 9);
+  if (std::numeric_limits<T>::is_signed) {
+    c = T(-1);
+    a.set(T(-4));
+  } else {
+    c = T(9);
+    a.set(T(6));
+  }
+  EXPECT_EQ(c.get(), T(9));
+  EXPECT_EQ(a.get(), T(6));
   a = std::move(c);
-  EXPECT_EQ(a.get(), 9);
-  a.set(-4);
-  EXPECT_EQ(a.get(), 6);
+  EXPECT_EQ(a.get(), T(9));
 
   // test conversions
-  a = 3;
-  EXPECT_EQ(static_cast<int>(a), 3);
-  EXPECT_EQ(static_cast<Mod10>(15).get(), 5);
+  a = T(3);
+  EXPECT_EQ(static_cast<T>(a), T(3));
+  EXPECT_EQ(static_cast<Mod10>(T(15)).get(), T(5));
 
   // test arithmetics
-  a = 6, b = 4;
+  a = T(6), b = T(4);
   c = a.add(b);
-  EXPECT_EQ(c.get(), 0);
+  EXPECT_EQ(c.get(), T(0));
   c = b.negate();
-  EXPECT_EQ(c.get(), 6);
+  EXPECT_EQ(c.get(), T(6));
   c = b.substract(a);
-  EXPECT_EQ(c.get(), 8);
+  EXPECT_EQ(c.get(), T(8));
   c = a.multiply(b);
-  EXPECT_EQ(c.get(), 4);
+  EXPECT_EQ(c.get(), T(4));
 
   // test comparisons
-  c = 3;
+  c = T(3);
   b = c;
-  a = 0;
+  a = T(0);
   EXPECT_TRUE(b.equal(c));
   EXPECT_FALSE(a.equal(b));
+}
+
+TEST(ModularTest, Basic) {
+  test_modular_basic<int16_t>();
+  test_modular_basic<int32_t>();
+  test_modular_basic<int64_t>();
+  test_modular_basic<uint16_t>();
+  test_modular_basic<uint32_t>();
+  test_modular_basic<uint64_t>();
 }
 
 }  // namespace number_theory
