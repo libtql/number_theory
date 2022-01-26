@@ -22,18 +22,18 @@ class Modular {
   using type = T;
   static constexpr T modulus = mod;
 
-  Modular(type value = 0) { set(std::move(value)); }
+  Modular(T value = 0) { set(std::move(value)); }
 
   Modular(const Modular &other) = default;
   Modular(Modular &&other) = default;
   Modular &operator=(const Modular &other) = default;
   Modular &operator=(Modular &&other) = default;
 
-  explicit operator type() const { return get(); }
+  explicit operator T() const { return get(); }
 
-  const type &get() const { return value_; }
+  const T &get() const { return value_; }
 
-  void set(type value) {
+  void set(T value) {
     value_ = std::move(value);
     if (value_ < 0 || value_ >= modulus) {
       value_ %= modulus;
@@ -44,7 +44,7 @@ class Modular {
 
   Modular add(const Modular &rhs) const {
     check_addition_overflow();
-    type new_value = value_ + rhs.value_;
+    T new_value = value_ + rhs.value_;
     if (new_value >= modulus)
       new_value -= modulus;
     return Modular(new_value);
@@ -62,7 +62,7 @@ class Modular {
   bool equal(const Modular &rhs) const { return value_ == rhs.value_; }
 
  protected:
-  type value_;
+  T value_;
 
   static constexpr size_t type_width = std::numeric_limits<T>::digits;
   static constexpr size_t modulus_width =

@@ -1,3 +1,5 @@
+#include <type_traits>
+
 #include <gtest/gtest.h>
 
 #include "number_theory/modular.h"
@@ -7,6 +9,8 @@ namespace number_theory {
 
 TEST(ModularTest, Basic) {
   using Mod10 = Modular<int, 10>;
+  static_assert(std::is_same<Mod10::type, int>::value);
+  static_assert(Mod10::modulus == 10);
 
   // test constructors
   Mod10 a = 123;
