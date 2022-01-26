@@ -22,6 +22,19 @@ class Modular {
   using type = T;
   static constexpr T modulus = mod;
 
+  // Returns the equivalent element of |x| in the modular ring.
+  // The result |y| should statisfy y = k*modulus + x for some integer k,
+  // and 0 <= y < modulus.
+  static constexpr T normalize(T x) {
+    T y = std::move(x);
+    if (y < 0 || y >= modulus) {
+      y %= modulus;
+      if (y < 0)
+        y += modulus;
+    }
+    return y;
+  }
+
   // This is an implicit constructor. We implicitly upgrade from T to Modular
   // to make it easier to use.
   Modular(T value = 0) { set(std::move(value)); }
@@ -36,14 +49,7 @@ class Modular {
 
   const T &get() const { return value_; }
 
-  void set(T value) {
-    value_ = std::move(value);
-    if (value_ < 0 || value_ >= modulus) {
-      value_ %= modulus;
-      if (value_ < 0)
-        value_ += modulus;
-    }
-  }
+  void set(T value) { value_ = normalize(std::move(value)); }
 
   Modular add(const Modular &rhs) const {
     check_addition_overflow();
