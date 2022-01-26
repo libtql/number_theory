@@ -3,6 +3,7 @@
 #include "number_theory/modular.h"
 
 namespace tql {
+namespace number_theory {
 
 TEST(ModularTest, Basic) {
   using Mod10 = Modular<int, 10>;
@@ -38,4 +39,5 @@ TEST(ModularTest, Basic) {
   EXPECT_FALSE(a.equal(b));
 }
 
+}  // namespace number_theory
 }  // namespace tql

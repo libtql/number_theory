@@ -23,18 +23,21 @@ class Modular {
   static constexpr T modulus = mod;
 
   Modular(type value = 0) { set(std::move(value)); }
+
   Modular(const Modular &other) = default;
   Modular(Modular &&other) = default;
-
   Modular &operator=(const Modular &other) = default;
   Modular &operator=(Modular &&other) = default;
 
   const type &get() const { return value_; }
 
   void set(type value) {
-    value_ = value % modulus;
-    if (value_ < 0)
-      value_ += modulus;
+    value_ = std::move(value);
+    if (value_ < 0 || value_ >= modulus) {
+      value_ %= modulus;
+      if (value_ < 0)
+        value_ += modulus;
+    }
   }
 
   Modular add(const Modular &rhs) const {
@@ -67,9 +70,9 @@ class Modular {
   }
 
   void check_multiplication_overflow() const {
-    static_assert(
-        modulus_width * 2 <= type_width,
-        "Modular multiplication may overflow. Please use larger integer types");
+    static_assert(modulus_width * 2 <= type_width,
+                  "Modular multiplication may overflow. "
+                  "Please use larger integer types.");
   }
 };
 
