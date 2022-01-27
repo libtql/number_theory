@@ -13,6 +13,25 @@
 namespace tql {
 namespace number_theory {
 
+namespace {
+
+// Returns the equivalent element of |x| in the ring of integers modulo
+// |modulus|. The result |y| should statisfy 0 <= y < modulus, and
+// y = k*modulus + x for some integer k.
+template <class T,
+          std::enable_if_t<std::numeric_limits<T>::is_integer, bool> = true>
+constexpr T normalize(T x, T modulus) {
+  T y = std::move(x);
+  if (y < 0 || y >= modulus) {
+    y %= modulus;
+    if (y < 0)
+      y += modulus;
+  }
+  return y;
+}
+
+}  // namespace
+
 template <class T, T mod>
 class Modular {
   static_assert(std::numeric_limits<T>::is_integer && mod > 0,
@@ -21,19 +40,6 @@ class Modular {
  public:
   using type = T;
   static constexpr T modulus = mod;
-
-  // Returns the equivalent element of |x| in the modular ring.
-  // The result |y| should statisfy y = k*modulus + x for some integer k,
-  // and 0 <= y < modulus.
-  static constexpr T normalize(T x) {
-    T y = std::move(x);
-    if (y < 0 || y >= modulus) {
-      y %= modulus;
-      if (y < 0)
-        y += modulus;
-    }
-    return y;
-  }
 
   // This is an implicit constructor. We implicitly upgrade from T to Modular
   // to make it easier to use.
@@ -49,7 +55,7 @@ class Modular {
 
   const T &get() const { return value_; }
 
-  void set(T value) { value_ = normalize(std::move(value)); }
+  void set(T value) { value_ = normalize(std::move(value), modulus); }
 
   Modular add(const Modular &rhs) const {
     check_addition_overflow();
