@@ -5,6 +5,7 @@
 
 #include <bit>
 #include <limits>
+#include <type_traits>
 
 #include "number_theory/utility.h"
 
