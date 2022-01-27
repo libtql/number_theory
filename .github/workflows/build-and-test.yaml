@@ -15,13 +15,13 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, ubuntu-20.04]
-        compiler: [g++-10, clang++]
+        compiler: [g++-10, clang++-12]
 
     steps:
       - uses: actions/checkout@v2
 
-      - name: Install GCC 10, Ninja, and GoogleTest.
-        run: sudo apt install -y g++-10 ninja-build libgtest-dev
+      - name: Install GCC 10, Clang 12, Ninja, and GoogleTest.
+        run: sudo apt install -y g++-10 clang-12 ninja-build libgtest-dev
 
       - name: Generate build files and compilation database.
         run: cmake -B out -G Ninja
