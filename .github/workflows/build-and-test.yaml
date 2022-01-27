@@ -3,7 +3,7 @@ name: build-and-test
 on: [pull_request]
 
 jobs:
-  job:
+  ubuntu:
     name: ${{ matrix.os }}.${{ matrix.compiler }}
 
     runs-on: ${{ matrix.os }}
@@ -14,14 +14,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, ubuntu-20.04, macos-latest]
-        compiler: [g++, clang++]
+        os: [ubuntu-latest, ubuntu-20.04]
+        compiler: [g++-10, clang++]
 
     steps:
       - uses: actions/checkout@v2
 
-      - name: Install CMake, Ninja, and GoogleTest.
-        run: sudo apt install -y cmake ninja-build libgtest-dev
+      - name: Install GCC 10, CMake, Ninja, and GoogleTest.
+        run: sudo apt install -y g++-10 cmake ninja-build libgtest-dev
 
       - name: Generate build files and compilation database.
         run: cmake -B out -G Ninja
