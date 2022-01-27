@@ -20,8 +20,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Install GCC 10, CMake, Ninja, and GoogleTest.
-        run: sudo apt install -y g++-10 cmake ninja-build libgtest-dev
+      - name: Install GCC 10, Ninja, and GoogleTest.
+        run: sudo apt install -y g++-10 ninja-build libgtest-dev
 
       - name: Generate build files and compilation database.
         run: cmake -B out -G Ninja
@@ -31,3 +31,33 @@ jobs:
 
       - name: Run unit tests.
         run: ctest --test-dir out -VV
+
+  macos:
+    name: ${{ matrix.os }}.${{ matrix.compiler }}
+
+    runs-on: ${{ matrix.os }}
+
+    env:
+      CXX: ${{ matrix.compiler }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest]
+        compiler: [g++, clang++]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Ninja and GoogleTest.
+        run: brew install ninja googletest
+
+      - name: Generate build files and compilation database.
+        run: cmake -B out -G Ninja
+
+      - name: Build unit tests.
+        run: ninja -C out
+
+      - name: Run unit tests.
+        run: ctest --test-dir out -VV
+
