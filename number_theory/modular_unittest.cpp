@@ -12,7 +12,7 @@ namespace number_theory {
 
 template <class T>
 void test_modular_basic() {
-  using Mod10 = Modular<T, T(10)>;
+  using Mod10 = Modular<T(10)>;
   static_assert(std::is_same<typename Mod10::type, T>::value);
   static_assert(Mod10::modulus == T(10));
 
