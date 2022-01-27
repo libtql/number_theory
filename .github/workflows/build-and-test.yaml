@@ -1,19 +1,33 @@
-name: test
+name: build-and-test
 
 on: [pull_request]
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
+  job:
+    name: ${{ matrix.os }}.${{ matrix.compiler }}
+
+    runs-on: ${{ matrix.os }}
+
+    env:
+      CXX: ${{ matrix.compiler }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, ubuntu-20.04, macos-latest]
+        compiler: [g++, clang++]
+
     steps:
       - uses: actions/checkout@v2
-      - name: Run clang-format style check.
-        uses: jidicula/clang-format-action@v4.5.0
+
       - name: Install CMake, Ninja, and GoogleTest.
         run: sudo apt install -y cmake ninja-build libgtest-dev
+
       - name: Generate build files and compilation database.
         run: cmake -B out -G Ninja
+
       - name: Build unit tests.
         run: ninja -C out
+
       - name: Run unit tests.
-        run: out/unittest
+        run: ctest --test-dir out -VV
