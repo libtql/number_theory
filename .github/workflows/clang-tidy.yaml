@@ -9,6 +9,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Install GoogleTest.
+        run: sudo apt install -y libgtest-dev
+
       - name: Generate build files and compilation database.
         run: cmake -B out
 
