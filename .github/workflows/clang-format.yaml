@@ -1,12 +1,13 @@
-name: checks
+name: clang-format-lint
 
 on: [pull_request]
 
 jobs:
-  coding-style:
-    name: Code Formatting Check
+  job:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v2
+
       - name: Run clang-format style check.
-        uses: jidicula/clang-format-action@v4.4.1
+        uses: jidicula/clang-format-action@v4.5.0
