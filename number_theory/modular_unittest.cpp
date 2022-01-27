@@ -41,6 +41,9 @@ void test_modular_basic() {
   a = T(3);
   EXPECT_EQ(static_cast<T>(a), T(3));
   EXPECT_EQ(static_cast<Mod10>(T(15)).get(), T(5));
+  // implicit conversions
+  EXPECT_EQ(a, 3);
+  EXPECT_EQ(Mod10(15), 5);
 
   // test arithmetics
   a = T(6), b = T(4);
