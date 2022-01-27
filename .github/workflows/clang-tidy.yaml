@@ -17,5 +17,10 @@ jobs:
 
       - name: Lint with clang-tidy.
         uses: ZedThree/clang-tidy-review@v0.7.1
+        id: review
         with:
           build_dir: out
+
+      # If there are any comments, fail the check.
+      - if: steps.review.total_comments > 0
+        run: exit 1
