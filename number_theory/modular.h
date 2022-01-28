@@ -5,6 +5,7 @@
 
 #include <bit>
 #include <limits>
+#include <type_traits>
 
 #include "number_theory/utility.h"
 
@@ -30,36 +31,44 @@ constexpr T normalize(T x, T modulus) {
   return y;
 }
 
+template <class T>
+struct ModulusWrapper {
+  using type = T;
+  T value;
+  constexpr ModulusWrapper(T x) : value(std::move(x)) {}
+};
+
 }  // namespace
 
-template <class T, T mod>
+template <ModulusWrapper mod>
 class Modular {
-  static_assert(std::numeric_limits<T>::is_integer && mod > 0,
+ public:
+  using type = std::decay_t<typename decltype(mod)::type>;
+  static constexpr type modulus = mod.value;
+
+  static_assert(std::numeric_limits<type>::is_integer && modulus > 0,
                 "Modular requires modulus to be a positive integer.");
 
- public:
-  using type = T;
-  static constexpr T modulus = mod;
-
-  // This is an implicit constructor. We implicitly upgrade from T to Modular
-  // to make it easier to use.
-  Modular(T value = 0) { set(std::move(value)); }
+  // This is an implicit constructor. We implicitly upgrade from Modular::type
+  // to Modular to make it easier to use.
+  Modular(type value = 0) { set(std::move(value)); }
 
   Modular(const Modular &other) = default;
   Modular(Modular &&other) = default;
   Modular &operator=(const Modular &other) = default;
   Modular &operator=(Modular &&other) = default;
 
-  // This is an implicit conversion, because we want a seamless conversion to T.
-  operator T() const { return get(); }
+  // This is an implicit conversion, because we want a seamless conversion from
+  // Modular to Modular::type.
+  operator type() const { return get(); }
 
-  const T &get() const { return value_; }
+  const type &get() const { return value_; }
 
-  void set(T value) { value_ = normalize(std::move(value), modulus); }
+  void set(type value) { value_ = normalize(std::move(value), modulus); }
 
   Modular add(const Modular &rhs) const {
     check_addition_overflow();
-    T new_value = value_ + rhs.value_;
+    type new_value = value_ + rhs.value_;
     if (new_value >= modulus)
       new_value -= modulus;
     return Modular(new_value);
@@ -81,11 +90,11 @@ class Modular {
   bool equal(const Modular &rhs) const { return value_ == rhs.value_; }
 
  protected:
-  T value_;
+  type value_;
 
-  static constexpr size_t type_width = std::numeric_limits<T>::digits;
+  static constexpr size_t type_width = std::numeric_limits<type>::digits;
   static constexpr size_t modulus_width =
-      std::bit_width(static_cast<std::make_unsigned_t<T>>(modulus));
+      std::bit_width(static_cast<std::make_unsigned_t<type>>(modulus));
 
   void check_addition_overflow() const {
     static_assert(
