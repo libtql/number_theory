@@ -19,7 +19,7 @@ namespace {
 // Returns the equivalent element of |x| in the ring of integers modulo
 // |modulus|. The result |y| should statisfy 0 <= y < modulus, and
 // y = k*modulus + x for some integer k.
-template <class T,
+template <typename T,
           std::enable_if_t<std::numeric_limits<T>::is_integer, bool> = true>
 constexpr T normalize(T x, T modulus) {
   T y = std::move(x);
@@ -31,7 +31,7 @@ constexpr T normalize(T x, T modulus) {
   return y;
 }
 
-template <class T>
+template <typename T>
 struct ModulusWrapper {
   using type = T;
   T value;
