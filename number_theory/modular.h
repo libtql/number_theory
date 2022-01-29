@@ -13,6 +13,7 @@
 
 namespace tql {
 namespace number_theory {
+
 namespace internal {
 
 // Returns the equivalent element of |x| in the ring of integers modulo
