@@ -90,8 +90,8 @@ class Modular {
     return Modular(modulus - value_);
   }
 
-  // Substraction in the modular ring.
-  Modular substract(const Modular &rhs) const { return add(rhs.negate()); }
+  // Subtraction in the modular ring.
+  Modular subtract(const Modular &rhs) const { return add(rhs.negate()); }
 
   // Multiplication in the modular ring.
   Modular multiply(const Modular &rhs) const {
