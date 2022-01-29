@@ -51,7 +51,7 @@ void test_modular_basic() {
   EXPECT_EQ(c.get(), T(0));
   c = b.negate();
   EXPECT_EQ(c.get(), T(6));
-  c = b.substract(a);
+  c = b.subtract(a);
   EXPECT_EQ(c.get(), T(8));
   c = a.multiply(b);
   EXPECT_EQ(c.get(), T(4));
