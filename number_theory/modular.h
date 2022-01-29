@@ -4,6 +4,7 @@
 #include <stddef.h>
 
 #include <bit>
+#include <concepts>
 #include <limits>
 #include <type_traits>
 
