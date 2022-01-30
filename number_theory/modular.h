@@ -115,7 +115,7 @@ class Modular {
 namespace modular_internal {
 
 // Tests if a class T is derived from Modular.
-template <class T>
+template <typename T>
 struct IsModularImpl {
   template <auto mod>
   static constexpr std::true_type test(Modular<mod>);
@@ -127,7 +127,7 @@ struct IsModularImpl {
 
 }  // namespace modular_internal
 
-template <class T>
+template <typename T>
 concept IsModular = modular_internal::IsModularImpl<T>::result;
 
 // Overloads an arithmetic operator with a class method
