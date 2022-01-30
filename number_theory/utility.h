@@ -53,7 +53,7 @@ constexpr std::make_unsigned_t<T> unsigned_abs(T x) {
                 "unsigned_abs argument |x| must be an integer.");
 
   auto y = static_cast<std::make_unsigned_t<T>>(x);
-  return x < 0 ? -y : y;
+  return x < 0 ? (~y + 1) : y;
 }
 
 }  // namespace number_theory
