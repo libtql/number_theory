@@ -14,7 +14,7 @@
 namespace tql {
 namespace number_theory {
 
-namespace {
+namespace modular_internal {
 
 // Returns the equivalent element of |x| in the ring of integers modulo
 // |modulus|. The result |y| should statisfy 0 <= y < modulus, and
@@ -42,10 +42,10 @@ struct ModulusWrapper {
   constexpr ModulusWrapper(T x) : value(std::move(x)) {}
 };
 
-}  // namespace
+}  // namespace modular_internal
 
 // Ring of integers modulo |mod|.
-template <ModulusWrapper mod>
+template <modular_internal::ModulusWrapper mod>
 class Modular {
  public:
   // The base type of the values in the ring.
@@ -73,7 +73,9 @@ class Modular {
   const type &get() const { return value_; }
 
   // Sets the element to a given value.
-  void set(type value) { value_ = normalize(std::move(value), modulus); }
+  void set(type value) {
+    value_ = modular_internal::normalize(std::move(value), modulus);
+  }
 
   // Addition in the modular ring.
   Modular add(const Modular &rhs) const {
