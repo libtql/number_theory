@@ -117,13 +117,12 @@ namespace modular_internal {
 // Tests if a class T is derived from Modular.
 template <class T>
 struct IsModularImpl {
-  template <auto mod,
-            std::enable_if_t<std::derived_from<T, Modular<mod>>, bool> = true>
-  static constexpr std::true_type test(const Modular<mod> *);
+  template <auto mod>
+  static constexpr std::true_type test(Modular<mod>);
 
   static constexpr std::false_type test(...);
 
-  static constexpr bool result = decltype(test(std::declval<T *>()))::value;
+  static constexpr bool result = decltype(test(std::declval<T>()))::value;
 };
 
 }  // namespace modular_internal
