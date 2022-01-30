@@ -114,10 +114,11 @@ class Modular {
 
 namespace modular_internal {
 
-// Tests if a class T is derived from Modular.
+// Tests if the type T is the Modular class.
 template <typename T>
 struct IsModularImpl {
-  template <auto mod>
+  template <auto mod,
+            std::enable_if_t<std::is_same_v<T, Modular<mod>>, bool> = true>
   static constexpr std::true_type test(Modular<mod>);
 
   static constexpr std::false_type test(...);
@@ -155,13 +156,29 @@ concept IsModular = modular_internal::IsModularImpl<T>::result;
 
 // Overloads a pair of comparison operator with a class method
 #define OVERLOAD_COMPARISON_OPERATOR(CONCEPT, OP, OP_NEG, METHOD) \
+  template <CONCEPT M>                                            \
+  bool operator OP(const M &lhs, const M &rhs) {                  \
+    return lhs.METHOD(rhs);                                       \
+  }                                                               \
   template <CONCEPT M, std::convertible_to<M> T>                  \
-  bool operator OP(M &lhs, const T &rhs) {                        \
+  bool operator OP(const M &lhs, const T &rhs) {                  \
     return lhs.METHOD(static_cast<M>(rhs));                       \
   }                                                               \
   template <CONCEPT M, std::convertible_to<M> T>                  \
-  bool operator OP_NEG(M &lhs, const T &rhs) {                    \
+  bool operator OP(const T &lhs, const M &rhs) {                  \
+    return static_cast<M>(lhs).METHOD(rhs);                       \
+  }                                                               \
+  template <CONCEPT M>                                            \
+  bool operator OP_NEG(const M &lhs, const M &rhs) {              \
+    return !lhs.METHOD(rhs);                                      \
+  }                                                               \
+  template <CONCEPT M, std::convertible_to<M> T>                  \
+  bool operator OP_NEG(const M &lhs, const T &rhs) {              \
     return !lhs.METHOD(static_cast<M>(rhs));                      \
+  }                                                               \
+  template <CONCEPT M, std::convertible_to<M> T>                  \
+  bool operator OP_NEG(const T &lhs, const M &rhs) {              \
+    return !static_cast<M>(lhs).METHOD(rhs);                      \
   }
 
 // Overloads an unary operator with a class method

@@ -142,5 +142,14 @@ TEST(ModularTest, Operators) {
   test_modular_operators<uint64_t>();
 }
 
+TEST(ModularTest, IsModularConcept) {
+  EXPECT_TRUE(IsModular<Modular<10>>);
+  EXPECT_FALSE(IsModular<int>);
+
+  // subclass is not the same as its superclass
+  class SubModular : public Modular<10> {};
+  EXPECT_FALSE(IsModular<SubModular>);
+}
+
 }  // namespace number_theory
 }  // namespace tql
