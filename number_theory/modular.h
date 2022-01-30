@@ -33,7 +33,8 @@ constexpr T normalize(T x, T modulus) {
 
 // Wrapper of a modulus of type T.
 // This is a helper class that wraps the template arguments for the Modular
-// class, so that we can use like Modular<10>.
+// class, so that we can pass a single constant to the Modular template without
+// specifying its type, for example Modular<10>.
 template <typename T>
 struct ModulusWrapper {
   using type = T;
@@ -47,7 +48,7 @@ struct ModulusWrapper {
 template <ModulusWrapper mod>
 class Modular {
  public:
-  // The base type of values in the ring.
+  // The base type of the values in the ring.
   using type = std::decay_t<typename decltype(mod)::type>;
   // The modulus of the modular ring.
   static constexpr type modulus = mod.value;
@@ -104,7 +105,7 @@ class Modular {
 
  protected:
   // An internal value, representing an element in the modular ring.
-  // It should always be in range [0, modulus).
+  // It should always be in the range [0, modulus).
   type value_;
 
   static constexpr size_t type_width = std::numeric_limits<type>::digits;
