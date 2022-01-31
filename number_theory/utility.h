@@ -52,8 +52,7 @@ constexpr std::make_unsigned_t<T> unsigned_abs(T x) {
   static_assert(std::numeric_limits<T>::is_integer,
                 "unsigned_abs argument |x| must be an integer.");
 
-  auto y = static_cast<std::make_unsigned_t<T>>(x);
-  return x < 0 ? -y : y;
+  return static_cast<std::make_unsigned_t<T>>(x < 0 ? -x : x);
 }
 
 }  // namespace number_theory
