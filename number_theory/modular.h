@@ -32,6 +32,10 @@ constexpr T normalize(T x, T modulus) {
   return y;
 }
 
+// Wrapper of a modulus of type T.
+// This is a helper class that wraps the template arguments for the Modular
+// class, so that we can pass a single constant to the Modular template without
+// specifying its type, for example Modular<10>.
 template <typename T>
 struct ModulusWrapper {
   using type = T;
@@ -41,10 +45,13 @@ struct ModulusWrapper {
 
 }  // namespace modular_internal
 
+// Ring of integers modulo |mod|.
 template <modular_internal::ModulusWrapper mod>
 class Modular {
  public:
+  // The base type of the values in the ring.
   using type = std::decay_t<typename decltype(mod)::type>;
+  // The modulus of the modular ring.
   static constexpr type modulus = mod.value;
 
   static_assert(std::numeric_limits<type>::is_integer && modulus > 0,
@@ -63,12 +70,15 @@ class Modular {
   // Modular to Modular::type.
   operator type() const { return get(); }
 
+  // Retrieves the value as Modular::type.
   const type &get() const { return value_; }
 
+  // Sets the element to a given value.
   void set(type value) {
     value_ = modular_internal::normalize(std::move(value), modulus);
   }
 
+  // Addition in the modular ring.
   Modular add(const Modular &rhs) const {
     check_addition_overflow();
     type new_value = value_ + rhs.value_;
@@ -77,34 +87,42 @@ class Modular {
     return Modular(new_value);
   }
 
+  // Returns the additive inverse.
   Modular negate() const {
     if (value_ == 0)
       return *this;
     return Modular(modulus - value_);
   }
 
+  // Subtraction in the modular ring.
   Modular subtract(const Modular &rhs) const { return add(rhs.negate()); }
 
+  // Multiplication in the modular ring.
   Modular multiply(const Modular &rhs) const {
     check_multiplication_overflow();
     return Modular(value_ * rhs.value_);
   }
 
+  // Compares for equality.
   bool equal(const Modular &rhs) const { return value_ == rhs.value_; }
 
  protected:
+  // An internal value, representing an element in the modular ring.
+  // It should always be in the range [0, modulus).
   type value_;
 
   static constexpr size_t type_width = std::numeric_limits<type>::digits;
   static constexpr size_t modulus_width =
       std::bit_width(static_cast<std::make_unsigned_t<type>>(modulus));
 
+  // Emits a compilation error if addition may overflow.
   void check_addition_overflow() const {
     static_assert(
         modulus_width + 1 <= type_width,
         "Modular addition may overflow. Please use larger integer types.");
   }
 
+  // Emits a compilation error if multiplication may overflow.
   void check_multiplication_overflow() const {
     static_assert(modulus_width * 2 <= type_width,
                   "Modular multiplication may overflow. "
