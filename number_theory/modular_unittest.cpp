@@ -143,12 +143,12 @@ TEST(ModularTest, OperatorOverloads) {
 }
 
 TEST(ModularTest, IsModularConcept) {
-  EXPECT_TRUE(IsModular<Modular<10>>);
-  EXPECT_FALSE(IsModular<int>);
+  EXPECT_TRUE(ModularType<Modular<10>>);
+  EXPECT_FALSE(ModularType<int>);
 
   // subclass is not the same as its superclass
   class SubModular : public Modular<10> {};
-  EXPECT_FALSE(IsModular<SubModular>);
+  EXPECT_FALSE(ModularType<SubModular>);
 }
 
 }  // namespace number_theory

@@ -134,20 +134,20 @@ namespace modular_internal {
 
 // Tests if the type T is the Modular class.
 template <typename T>
-struct IsModularImpl {
+struct is_modular {
   template <auto mod,
             std::enable_if_t<std::is_same_v<T, Modular<mod>>, bool> = true>
   static constexpr std::true_type test(Modular<mod>);
 
   static constexpr std::false_type test(...);
 
-  static constexpr bool result = decltype(test(std::declval<T>()))::value;
+  static constexpr bool value = decltype(test(std::declval<T>()))::value;
 };
 
 }  // namespace modular_internal
 
 template <typename T>
-concept IsModular = modular_internal::IsModularImpl<T>::result;
+concept ModularType = modular_internal::is_modular<T>::value;
 
 // Overloads an arithmetic operator with a class method.
 #define OVERLOAD_ARITHMETIC_OPERATOR(CONCEPT, OP, METHOD) \
@@ -222,21 +222,21 @@ concept IsModular = modular_internal::IsModularImpl<T>::result;
     return old;                                        \
   }
 
-OVERLOAD_ARITHMETIC_OPERATOR(IsModular, +, add)
-OVERLOAD_ARITHMETIC_OPERATOR(IsModular, -, subtract)
-OVERLOAD_ARITHMETIC_OPERATOR(IsModular, *, multiply)
+OVERLOAD_ARITHMETIC_OPERATOR(ModularType, +, add)
+OVERLOAD_ARITHMETIC_OPERATOR(ModularType, -, subtract)
+OVERLOAD_ARITHMETIC_OPERATOR(ModularType, *, multiply)
 
-OVERLOAD_INPLACE_OPERATOR(IsModular, +=, add)
-OVERLOAD_INPLACE_OPERATOR(IsModular, -=, subtract)
-OVERLOAD_INPLACE_OPERATOR(IsModular, *=, multiply)
+OVERLOAD_INPLACE_OPERATOR(ModularType, +=, add)
+OVERLOAD_INPLACE_OPERATOR(ModularType, -=, subtract)
+OVERLOAD_INPLACE_OPERATOR(ModularType, *=, multiply)
 
-OVERLOAD_COMPARISON_OPERATOR(IsModular, ==, !=, equal)
+OVERLOAD_COMPARISON_OPERATOR(ModularType, ==, !=, equal)
 
-OVERLOAD_UNARY_OPERRATOR(IsModular, -, negate)
-OVERLOAD_UNARY_OPERRATOR(IsModular, +, get)
+OVERLOAD_UNARY_OPERRATOR(ModularType, -, negate)
+OVERLOAD_UNARY_OPERRATOR(ModularType, +, get)
 
-OVERLOAD_INCDEC_OPERRATOR(IsModular, ++, add)
-OVERLOAD_INCDEC_OPERRATOR(IsModular, --, subtract)
+OVERLOAD_INCDEC_OPERRATOR(ModularType, ++, add)
+OVERLOAD_INCDEC_OPERRATOR(ModularType, --, subtract)
 
 #undef OVERLOAD_ARITHMETIC_OPERATOR
 #undef OVERLOAD_INPLACE_OPERATOR
