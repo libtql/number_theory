@@ -105,6 +105,7 @@ class Modular {
 
   // Compares for equality.
   bool equal(const Modular &rhs) const { return value_ == rhs.value_; }
+  bool not_equal(const Modular &rhs) const { return !equal(rhs); }
 
  protected:
   // An internal value, representing an element in the modular ring.
@@ -173,30 +174,18 @@ concept ModularType = modular_internal::is_modular<T>::value;
   }
 
 // Overloads a pair of comparison operator with a class method.
-#define OVERLOAD_COMPARISON_OPERATOR(CONCEPT, OP, OP_NEG, METHOD) \
-  template <CONCEPT M>                                            \
-  bool operator OP(const M &lhs, const M &rhs) {                  \
-    return lhs.METHOD(rhs);                                       \
-  }                                                               \
-  template <CONCEPT M, std::convertible_to<M> T>                  \
-  bool operator OP(const M &lhs, const T &rhs) {                  \
-    return lhs.METHOD(static_cast<M>(rhs));                       \
-  }                                                               \
-  template <CONCEPT M, std::convertible_to<M> T>                  \
-  bool operator OP(const T &lhs, const M &rhs) {                  \
-    return static_cast<M>(lhs).METHOD(rhs);                       \
-  }                                                               \
-  template <CONCEPT M>                                            \
-  bool operator OP_NEG(const M &lhs, const M &rhs) {              \
-    return !lhs.METHOD(rhs);                                      \
-  }                                                               \
-  template <CONCEPT M, std::convertible_to<M> T>                  \
-  bool operator OP_NEG(const M &lhs, const T &rhs) {              \
-    return !lhs.METHOD(static_cast<M>(rhs));                      \
-  }                                                               \
-  template <CONCEPT M, std::convertible_to<M> T>                  \
-  bool operator OP_NEG(const T &lhs, const M &rhs) {              \
-    return !static_cast<M>(lhs).METHOD(rhs);                      \
+#define OVERLOAD_COMPARISON_OPERATOR(CONCEPT, OP, METHOD) \
+  template <CONCEPT M>                                    \
+  bool operator OP(const M &lhs, const M &rhs) {          \
+    return lhs.METHOD(rhs);                               \
+  }                                                       \
+  template <CONCEPT M, std::convertible_to<M> T>          \
+  bool operator OP(const M &lhs, const T &rhs) {          \
+    return lhs.METHOD(static_cast<M>(rhs));               \
+  }                                                       \
+  template <CONCEPT M, std::convertible_to<M> T>          \
+  bool operator OP(const T &lhs, const M &rhs) {          \
+    return static_cast<M>(lhs).METHOD(rhs);               \
   }
 
 // Overloads an unary operator with a class method.
@@ -230,7 +219,8 @@ OVERLOAD_INPLACE_OPERATOR(ModularType, +=, add)
 OVERLOAD_INPLACE_OPERATOR(ModularType, -=, subtract)
 OVERLOAD_INPLACE_OPERATOR(ModularType, *=, multiply)
 
-OVERLOAD_COMPARISON_OPERATOR(ModularType, ==, !=, equal)
+OVERLOAD_COMPARISON_OPERATOR(ModularType, ==, equal)
+OVERLOAD_COMPARISON_OPERATOR(ModularType, !=, not_equal)
 
 OVERLOAD_UNARY_OPERRATOR(ModularType, -, negate)
 OVERLOAD_UNARY_OPERRATOR(ModularType, +, get)

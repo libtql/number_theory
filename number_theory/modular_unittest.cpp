@@ -142,7 +142,7 @@ TEST(ModularTest, OperatorOverloads) {
   test_modular_operators<uint64_t>();
 }
 
-TEST(ModularTest, IsModularConcept) {
+TEST(ModularTest, ModularConcept) {
   EXPECT_TRUE(ModularType<Modular<10>>);
   EXPECT_FALSE(ModularType<int>);
 
