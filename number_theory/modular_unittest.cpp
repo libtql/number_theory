@@ -133,7 +133,7 @@ void test_modular_operators() {
   EXPECT_EQ(a, 9);
 }
 
-TEST(ModularTest, Operators) {
+TEST(ModularTest, OperatorOverloads) {
   test_modular_operators<int16_t>();
   test_modular_operators<int32_t>();
   test_modular_operators<int64_t>();
