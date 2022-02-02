@@ -4,6 +4,7 @@
 #include <stddef.h>
 
 #include <bit>
+#include <concepts>
 #include <limits>
 #include <type_traits>
 
@@ -104,6 +105,7 @@ class Modular {
 
   // Compares for equality.
   bool equal(const Modular &rhs) const { return value_ == rhs.value_; }
+  bool not_equal(const Modular &rhs) const { return !equal(rhs); }
 
  protected:
   // An internal value, representing an element in the modular ring.
@@ -128,6 +130,112 @@ class Modular {
                   "Please use larger integer types.");
   }
 };
+
+namespace modular_internal {
+
+// Tests if the type T is the Modular class.
+template <typename T>
+struct IsModularImpl {
+  template <auto mod,
+            std::enable_if_t<std::is_same_v<T, Modular<mod>>, bool> = true>
+  static constexpr std::true_type test(Modular<mod>);
+
+  static constexpr std::false_type test(...);
+
+  static constexpr bool value = decltype(test(std::declval<T>()))::value;
+};
+
+}  // namespace modular_internal
+
+template <typename T>
+constexpr bool is_modular = modular_internal::IsModularImpl<T>::value;
+
+template <typename T>
+concept ModularType = is_modular<T>;
+
+// Overloads an arithmetic operator with a class method.
+#define OVERLOAD_MODULAR_ARITHMETIC_OPERATOR(OP, METHOD) \
+  template <ModularType M>                               \
+  M operator OP(const M &lhs, const M &rhs) {            \
+    return lhs.METHOD(rhs);                              \
+  }                                                      \
+  template <ModularType M, std::convertible_to<M> T>     \
+  M operator OP(const M &lhs, const T &rhs) {            \
+    return lhs.METHOD(static_cast<M>(rhs));              \
+  }                                                      \
+  template <ModularType M, std::convertible_to<M> T>     \
+  M operator OP(const T &lhs, const M &rhs) {            \
+    return static_cast<M>(lhs).METHOD(rhs);              \
+  }
+
+// Overloads an inplace operator with a class method.
+#define OVERLOAD_MODULAR_INPLACE_OPERATOR(OP, METHOD) \
+  template <ModularType M, std::convertible_to<M> T>  \
+  M &operator OP(M &lhs, const T &rhs) {              \
+    lhs = lhs.METHOD(static_cast<M>(rhs));            \
+    return lhs;                                       \
+  }
+
+// Overloads a pair of comparison operator with a class method.
+#define OVERLOAD_MODULAR_COMPARISON_OPERATOR(OP, METHOD) \
+  template <ModularType M>                               \
+  bool operator OP(const M &lhs, const M &rhs) {         \
+    return lhs.METHOD(rhs);                              \
+  }                                                      \
+  template <ModularType M, std::convertible_to<M> T>     \
+  bool operator OP(const M &lhs, const T &rhs) {         \
+    return lhs.METHOD(static_cast<M>(rhs));              \
+  }                                                      \
+  template <ModularType M, std::convertible_to<M> T>     \
+  bool operator OP(const T &lhs, const M &rhs) {         \
+    return static_cast<M>(lhs).METHOD(rhs);              \
+  }
+
+// Overloads an unary operator with a class method.
+#define OVERLOAD_MODULAR_UNARY_OPERRATOR(OP, METHOD) \
+  template <ModularType M>                           \
+  M operator OP(const M &x) {                        \
+    return x.METHOD();                               \
+  }
+
+// Overload an increment/decrement operator with a class method.
+#define OVERLOAD_MODULAR_INCDEC_OPERRATOR(OP, METHOD) \
+  /* prefix */                                        \
+  template <ModularType M>                            \
+  M &operator OP(M &x) {                              \
+    x = x.METHOD(M(1));                               \
+    return x;                                         \
+  }                                                   \
+  /* postfix */                                       \
+  template <ModularType M>                            \
+  M operator OP(M &x, int) {                          \
+    M old = x;                                        \
+    x = x.METHOD(M(1));                               \
+    return old;                                       \
+  }
+
+OVERLOAD_MODULAR_ARITHMETIC_OPERATOR(+, add)
+OVERLOAD_MODULAR_ARITHMETIC_OPERATOR(-, subtract)
+OVERLOAD_MODULAR_ARITHMETIC_OPERATOR(*, multiply)
+
+OVERLOAD_MODULAR_INPLACE_OPERATOR(+=, add)
+OVERLOAD_MODULAR_INPLACE_OPERATOR(-=, subtract)
+OVERLOAD_MODULAR_INPLACE_OPERATOR(*=, multiply)
+
+OVERLOAD_MODULAR_COMPARISON_OPERATOR(==, equal)
+OVERLOAD_MODULAR_COMPARISON_OPERATOR(!=, not_equal)
+
+OVERLOAD_MODULAR_UNARY_OPERRATOR(-, negate)
+OVERLOAD_MODULAR_UNARY_OPERRATOR(+, get)
+
+OVERLOAD_MODULAR_INCDEC_OPERRATOR(++, add)
+OVERLOAD_MODULAR_INCDEC_OPERRATOR(--, subtract)
+
+#undef OVERLOAD_ARITHMETIC_OPERATOR
+#undef OVERLOAD_INPLACE_OPERATOR
+#undef OVERLOAD_COMPARISON_OPERATOR
+#undef OVERLOAD_UNARY_OPERRATOR
+#undef OVERLOAD_INCDEC_OPERRATOR
 
 }  // namespace number_theory
 

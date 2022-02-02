@@ -42,8 +42,9 @@ void test_modular_basic() {
   EXPECT_EQ(static_cast<T>(a), T(3));
   EXPECT_EQ(static_cast<Mod10>(T(15)).get(), T(5));
   // implicit conversions
-  EXPECT_EQ(a, 3);
-  EXPECT_EQ(Mod10(15), 5);
+  T x = a;
+  EXPECT_EQ(x, T(3));
+  EXPECT_EQ(Mod10{15}.get(), 5);
 
   // test arithmetics
   a = T(6), b = T(4);
@@ -71,6 +72,83 @@ TEST(ModularTest, Basic) {
   test_modular_basic<uint16_t>();
   test_modular_basic<uint32_t>();
   test_modular_basic<uint64_t>();
+}
+
+template <typename T>
+void test_modular_operators() {
+  using Mod10 = Modular<T(10)>;
+
+  // test addition
+  Mod10 a = 7, b = 5;
+  EXPECT_EQ(a + b, 2);
+  EXPECT_EQ(a + 3, 0);
+  EXPECT_EQ(3 + a, 0);
+  b += a;
+  EXPECT_EQ(b, 2);
+  a += 4;
+  EXPECT_EQ(a, 1);
+
+  // test subtraction
+  a = 7, b = 5;
+  EXPECT_EQ(b - a, 8);
+  EXPECT_EQ(a - 8, 9);
+  EXPECT_EQ(0 - a, 3);
+  b -= a;
+  EXPECT_EQ(b, 8);
+  a -= 10;
+  EXPECT_EQ(a, 7);
+
+  // test multiplication
+  a = 7, b = 5;
+  EXPECT_EQ(a * b, 5);
+  EXPECT_EQ(a * 2, 4);
+  EXPECT_EQ(3 * a, 1);
+  b *= a;
+  EXPECT_EQ(b, 5);
+  a *= 10;
+  EXPECT_EQ(a, 0);
+
+  // test comparison
+  EXPECT_EQ(Mod10(1), 11);
+  EXPECT_EQ(11, Mod10(1));
+  EXPECT_EQ(Mod10(1), Mod10(11));
+  EXPECT_NE(1, Mod10(3));
+  EXPECT_NE(Mod10(3), 1);
+  EXPECT_NE(Mod10(1), Mod10(3));
+
+  // test unary operators
+  a = 7;
+  EXPECT_EQ(+a, 7);
+  EXPECT_EQ(-a, 3);
+
+  // test increment/decrement
+  a = 9;
+  EXPECT_EQ(a++, 9);
+  EXPECT_EQ(a, 0);
+  EXPECT_EQ(++a, 1);
+  EXPECT_EQ(a, 1);
+  EXPECT_EQ(a--, 1);
+  EXPECT_EQ(a, 0);
+  EXPECT_EQ(--a, 9);
+  EXPECT_EQ(a, 9);
+}
+
+TEST(ModularTest, OperatorOverloads) {
+  test_modular_operators<int16_t>();
+  test_modular_operators<int32_t>();
+  test_modular_operators<int64_t>();
+  test_modular_operators<uint16_t>();
+  test_modular_operators<uint32_t>();
+  test_modular_operators<uint64_t>();
+}
+
+TEST(ModularTest, ModularConcept) {
+  EXPECT_TRUE(ModularType<Modular<10>>);
+  EXPECT_FALSE(ModularType<int>);
+
+  // subclass is not the same as its superclass
+  class SubModular : public Modular<10> {};
+  EXPECT_FALSE(ModularType<SubModular>);
 }
 
 }  // namespace number_theory
