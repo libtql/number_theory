@@ -151,82 +151,82 @@ template <typename T>
 concept ModularType = modular_internal::ModularTypeImpl<T>::value;
 
 // Overloads an arithmetic operator with a class method.
-#define OVERLOAD_ARITHMETIC_OPERATOR(CONCEPT, OP, METHOD) \
-  template <CONCEPT M>                                    \
-  M operator OP(const M &lhs, const M &rhs) {             \
-    return lhs.METHOD(rhs);                               \
-  }                                                       \
-  template <CONCEPT M, std::convertible_to<M> T>          \
-  M operator OP(const M &lhs, const T &rhs) {             \
-    return lhs.METHOD(static_cast<M>(rhs));               \
-  }                                                       \
-  template <CONCEPT M, std::convertible_to<M> T>          \
-  M operator OP(const T &lhs, const M &rhs) {             \
-    return static_cast<M>(lhs).METHOD(rhs);               \
+#define OVERLOAD_ARITHMETIC_OPERATOR(OP, METHOD)     \
+  template <ModularType M>                           \
+  M operator OP(const M &lhs, const M &rhs) {        \
+    return lhs.METHOD(rhs);                          \
+  }                                                  \
+  template <ModularType M, std::convertible_to<M> T> \
+  M operator OP(const M &lhs, const T &rhs) {        \
+    return lhs.METHOD(static_cast<M>(rhs));          \
+  }                                                  \
+  template <ModularType M, std::convertible_to<M> T> \
+  M operator OP(const T &lhs, const M &rhs) {        \
+    return static_cast<M>(lhs).METHOD(rhs);          \
   }
 
 // Overloads an inplace operator with a class method.
-#define OVERLOAD_INPLACE_OPERATOR(CONCEPT, OP, METHOD) \
-  template <CONCEPT M, std::convertible_to<M> T>       \
-  M &operator OP(M &lhs, const T &rhs) {               \
-    lhs = lhs.METHOD(static_cast<M>(rhs));             \
-    return lhs;                                        \
+#define OVERLOAD_INPLACE_OPERATOR(OP, METHOD)        \
+  template <ModularType M, std::convertible_to<M> T> \
+  M &operator OP(M &lhs, const T &rhs) {             \
+    lhs = lhs.METHOD(static_cast<M>(rhs));           \
+    return lhs;                                      \
   }
 
 // Overloads a pair of comparison operator with a class method.
-#define OVERLOAD_COMPARISON_OPERATOR(CONCEPT, OP, METHOD) \
-  template <CONCEPT M>                                    \
-  bool operator OP(const M &lhs, const M &rhs) {          \
-    return lhs.METHOD(rhs);                               \
-  }                                                       \
-  template <CONCEPT M, std::convertible_to<M> T>          \
-  bool operator OP(const M &lhs, const T &rhs) {          \
-    return lhs.METHOD(static_cast<M>(rhs));               \
-  }                                                       \
-  template <CONCEPT M, std::convertible_to<M> T>          \
-  bool operator OP(const T &lhs, const M &rhs) {          \
-    return static_cast<M>(lhs).METHOD(rhs);               \
+#define OVERLOAD_COMPARISON_OPERATOR(OP, METHOD)     \
+  template <ModularType M>                           \
+  bool operator OP(const M &lhs, const M &rhs) {     \
+    return lhs.METHOD(rhs);                          \
+  }                                                  \
+  template <ModularType M, std::convertible_to<M> T> \
+  bool operator OP(const M &lhs, const T &rhs) {     \
+    return lhs.METHOD(static_cast<M>(rhs));          \
+  }                                                  \
+  template <ModularType M, std::convertible_to<M> T> \
+  bool operator OP(const T &lhs, const M &rhs) {     \
+    return static_cast<M>(lhs).METHOD(rhs);          \
   }
 
 // Overloads an unary operator with a class method.
-#define OVERLOAD_UNARY_OPERRATOR(CONCEPT, OP, METHOD) \
-  template <CONCEPT M>                                \
-  M operator OP(const M &x) {                         \
-    return x.METHOD();                                \
+#define OVERLOAD_UNARY_OPERRATOR(OP, METHOD) \
+  template <ModularType M>                   \
+  M operator OP(const M &x) {                \
+    return x.METHOD();                       \
   }
 
 // Overload an increment/decrement operator with a class method.
-#define OVERLOAD_INCDEC_OPERRATOR(CONCEPT, OP, METHOD) \
-  /* prefix */                                         \
-  template <CONCEPT M>                                 \
-  M &operator OP(M &x) {                               \
-    x = x.METHOD(M(1));                                \
-    return x;                                          \
-  }                                                    \
-  /* postfix */                                        \
-  template <CONCEPT M>                                 \
-  M operator OP(M &x, int) {                           \
-    M old = x;                                         \
-    x = x.METHOD(M(1));                                \
-    return old;                                        \
+#define OVERLOAD_INCDEC_OPERRATOR(OP, METHOD) \
+  /* prefix */                                \
+  template <ModularType M>                    \
+  M &operator OP(M &x) {                      \
+    x = x.METHOD(M(1));                       \
+    return x;                                 \
+  }                                           \
+  /* postfix */                               \
+  template <ModularType M>                    \
+  M operator OP(M &x, int) {                  \
+    M old = x;                                \
+    x = x.METHOD(M(1));                       \
+    return old;                               \
   }
 
-OVERLOAD_ARITHMETIC_OPERATOR(ModularType, +, add)
-OVERLOAD_ARITHMETIC_OPERATOR(ModularType, -, subtract)
-OVERLOAD_ARITHMETIC_OPERATOR(ModularType, *, multiply)
+OVERLOAD_ARITHMETIC_OPERATOR(+, add)
+OVERLOAD_ARITHMETIC_OPERATOR(-, subtract)
+OVERLOAD_ARITHMETIC_OPERATOR(*, multiply)
 
-OVERLOAD_INPLACE_OPERATOR(ModularType, +=, add)
-OVERLOAD_INPLACE_OPERATOR(ModularType, -=, subtract)
-OVERLOAD_INPLACE_OPERATOR(ModularType, *=, multiply)
+OVERLOAD_INPLACE_OPERATOR(+=, add)
+OVERLOAD_INPLACE_OPERATOR(-=, subtract)
+OVERLOAD_INPLACE_OPERATOR(*=, multiply)
 
-OVERLOAD_COMPARISON_OPERATOR(ModularType, ==, equal)
-OVERLOAD_COMPARISON_OPERATOR(ModularType, !=, not_equal)
+OVERLOAD_COMPARISON_OPERATOR(==, equal)
+OVERLOAD_COMPARISON_OPERATOR(!=, not_equal)
 
-OVERLOAD_UNARY_OPERRATOR(ModularType, -, negate)
-OVERLOAD_UNARY_OPERRATOR(ModularType, +, get)
+OVERLOAD_UNARY_OPERRATOR(-, negate)
+OVERLOAD_UNARY_OPERRATOR(+, get)
 
-OVERLOAD_INCDEC_OPERRATOR(ModularType, ++, add)
-OVERLOAD_INCDEC_OPERRATOR(ModularType, --, subtract)
+OVERLOAD_INCDEC_OPERRATOR(++, add)
+OVERLOAD_INCDEC_OPERRATOR(--, subtract)
 
 #undef OVERLOAD_ARITHMETIC_OPERATOR
 #undef OVERLOAD_INPLACE_OPERATOR
