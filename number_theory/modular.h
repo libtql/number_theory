@@ -135,7 +135,7 @@ namespace modular_internal {
 
 // Tests if the type T is the Modular class.
 template <typename T>
-struct ModularTypeImpl {
+struct IsModularImpl {
   template <auto mod,
             std::enable_if_t<std::is_same_v<T, Modular<mod>>, bool> = true>
   static constexpr std::true_type test(Modular<mod>);
@@ -148,7 +148,10 @@ struct ModularTypeImpl {
 }  // namespace modular_internal
 
 template <typename T>
-concept ModularType = modular_internal::ModularTypeImpl<T>::value;
+constexpr bool is_modular = modular_internal::IsModularImpl<T>::value;
+
+template <typename T>
+concept ModularType = is_modular<T>;
 
 // Overloads an arithmetic operator with a class method.
 #define OVERLOAD_MODULAR_ARITHMETIC_OPERATOR(OP, METHOD) \
