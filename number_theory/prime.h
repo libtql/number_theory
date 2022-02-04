@@ -17,7 +17,7 @@ template <typename T,
           std::enable_if_t<std::numeric_limits<T>::is_integer &&
                                std::numeric_limits<T>::digits <= 16,
                            bool> = true>
-constexpr bool is_prime(T number) {
+constexpr bool is_prime(const T &number) {
   // There are no prime numbers smaller than 2.
   if (number < 2)
     return false;
