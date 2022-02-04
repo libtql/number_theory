@@ -17,13 +17,13 @@ namespace number_theory {
 // As an example, when |operation| is addition, it becomes a popcount.
 template <typename T, typename U>
 U binary_accumulate(T binary,
-                    const U &initial_value,
+                    U initial_value,
                     std::function<void(bool, U &)> operation) {
   static_assert(std::numeric_limits<T>::is_integer,
                 "binary_accumulate argument |binary| must be an integer");
 
-  T current = binary;
-  U result = initial_value;
+  T current = std::move(binary);
+  U result = std::move(initial_value);
   while (current != 0) {
     bool bit = (current % 2) != 0;
     current /= 2;
@@ -37,7 +37,7 @@ U binary_accumulate(T binary,
 // If x > 0, sign(x) = 1.
 // If x < 0, sign(x) = -1.
 template <typename T>
-constexpr int sign(T x) {
+constexpr int sign(const T &x) {
   if (x == 0)
     return 0;
   return x > 0 ? 1 : -1;
@@ -48,7 +48,7 @@ constexpr int sign(T x) {
 // This can be useful because std::abs doesn't support unsigned integers, and
 // std::abs(std::numeric_limits<T>::min()) is undefined.
 template <typename T>
-constexpr std::make_unsigned_t<T> unsigned_abs(T x) {
+constexpr std::make_unsigned_t<T> unsigned_abs(const T &x) {
   static_assert(std::numeric_limits<T>::is_integer,
                 "unsigned_abs argument |x| must be an integer.");
 
