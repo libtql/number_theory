@@ -5,6 +5,7 @@
 
 #include <bit>
 #include <concepts>
+#include <iostream>
 #include <limits>
 #include <type_traits>
 
@@ -198,7 +199,7 @@ concept ModularType = is_modular<T>;
     return x.METHOD();                               \
   }
 
-// Overload an increment/decrement operator with a class method.
+// Overloads an increment/decrement operator with a class method.
 #define OVERLOAD_MODULAR_INCDEC_OPERRATOR(OP, METHOD) \
   /* prefix */                                        \
   template <ModularType M>                            \
@@ -236,6 +237,22 @@ OVERLOAD_MODULAR_INCDEC_OPERRATOR(--, subtract)
 #undef OVERLOAD_COMPARISON_OPERATOR
 #undef OVERLOAD_UNARY_OPERRATOR
 #undef OVERLOAD_INCDEC_OPERRATOR
+
+// Overloads input stream operator.
+template <ModularType M>
+std::istream &operator>>(std::istream &stream, M &modular) {
+  typename M::type value;
+  stream >> value;
+  modular.set(std::move(value));
+  return stream;
+}
+
+// Overloads output stream operator.
+template <ModularType M>
+std::ostream &operator<<(std::ostream &stream, const M &modular) {
+  stream << modular.get();
+  return stream;
+}
 
 }  // namespace number_theory
 

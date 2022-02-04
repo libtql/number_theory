@@ -1,6 +1,8 @@
 #include <stdint.h>
 
 #include <limits>
+#include <sstream>
+#include <string>
 #include <type_traits>
 
 #include <gtest/gtest.h>
@@ -149,6 +151,34 @@ TEST(ModularTest, ModularConcept) {
   // subclass is not the same as its superclass
   class SubModular : public Modular<10> {};
   EXPECT_FALSE(ModularType<SubModular>);
+}
+
+template <typename T>
+void test_modular_iostream() {
+  using Mod10 = Modular<T(10)>;
+  Mod10 a, b;
+
+  // test input
+  std::istringstream input_stream("3 19");
+  input_stream >> a >> b;
+  EXPECT_EQ(a, 3);
+  EXPECT_EQ(b, 9);
+
+  // test output
+  std::ostringstream output_stream;
+  a = 10;
+  b = 15;
+  output_stream << a << ' ' << b;
+  EXPECT_EQ(output_stream.str(), "0 5");
+}
+
+TEST(ModularTest, IOStream) {
+  test_modular_iostream<int16_t>();
+  test_modular_iostream<int32_t>();
+  test_modular_iostream<int64_t>();
+  test_modular_iostream<uint16_t>();
+  test_modular_iostream<uint32_t>();
+  test_modular_iostream<uint64_t>();
 }
 
 }  // namespace number_theory
