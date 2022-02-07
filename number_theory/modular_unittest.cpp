@@ -181,5 +181,27 @@ TEST(ModularTest, IOStream) {
   test_modular_iostream<uint64_t>();
 }
 
+template <typename T>
+void test_modular_inverse() {
+  T num = 7;
+  T mod = 26;
+  EXPECT_EQ(inverse(num, mod), 15);
+
+  num = 8;
+  mod = 41;
+  EXPECT_EQ(inverse(num, mod), 36);
+}
+
+TEST(ModularTest, Inverse) {
+  test_modular_inverse<int8_t>();
+  test_modular_inverse<int16_t>();
+  test_modular_inverse<int32_t>();
+  test_modular_inverse<int64_t>();
+  // test_modular_inverse<uint8_t>();
+  // test_modular_inverse<uint16_t>();
+  // test_modular_inverse<uint32_t>();
+  // test_modular_inverse<uint64_t>();
+}
+
 }  // namespace number_theory
 }  // namespace tql

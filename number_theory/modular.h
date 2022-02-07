@@ -8,7 +8,9 @@
 #include <iostream>
 #include <limits>
 #include <type_traits>
+#include <stdexcept>
 
+#include "number_theory/numeric.h"
 #include "number_theory/utility.h"
 
 // Modular arithmetic
@@ -131,6 +133,19 @@ class Modular {
                   "Please use larger integer types.");
   }
 };
+
+// Returns the modular inverse of |number| in modulo |mod| if exists.
+// Otherwise, throws an invalid_argument exception.
+template <typename T,
+          std::enable_if_t<std::numeric_limits<T>::is_integer, bool> = true>
+T inverse(T number, T mod) {
+  T num = modular_internal::normalize(std::move(number), mod);
+  auto [x, y] = exgcd(num, mod);
+  if (x * num + y * mod != 1) {
+    throw std::invalid_argument("The inverse does not exist.");
+  }
+  return modular_internal::normalize(std::move(x), mod);
+}
 
 namespace modular_internal {
 
@@ -256,6 +271,7 @@ std::ostream &operator<<(std::ostream &stream, const M &modular) {
 
 }  // namespace number_theory
 
+using number_theory::inverse;
 using number_theory::Modular;
 
 }  // namespace tql
