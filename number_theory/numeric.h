@@ -22,7 +22,7 @@ using std::lcm;
 // Given two numbers |a| and |b|, returns a pair (x, y) satisfying
 // x*a + y*b == gcd(a,b).
 template <typename T>
-std::pair<T, T> exgcd(T a, T b) {
+constexpr std::pair<T, T> exgcd(const T &a, const T &b) {
   static_assert(
       std::numeric_limits<T>::is_integer && std::numeric_limits<T>::is_signed,
       "exgcd arguments must be signed integers");
@@ -55,7 +55,7 @@ std::pair<T, T> exgcd(T a, T b) {
 template <typename T,
           typename U,
           std::enable_if_t<std::numeric_limits<U>::is_integer, bool> = true>
-T pow(const T &base, U exponent) {
+T pow(T base, const U &exponent) {
   using Pair_TT = std::pair<T, T>;
   using Unsigned_U = std::make_unsigned_t<U>;
 
@@ -70,7 +70,7 @@ T pow(const T &base, U exponent) {
 
   Unsigned_U abs_exp = unsigned_abs(exponent);
   Pair_TT state = binary_accumulate<Unsigned_U, Pair_TT>(
-      abs_exp, std::make_pair(1, base), update);
+      abs_exp, std::make_pair(1, std::move(base)), update);
   T result = std::move(state.first);
 
   // Return the inverse of the result if the exponent is negative.
