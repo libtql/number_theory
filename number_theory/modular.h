@@ -53,11 +53,12 @@ struct ModulusWrapper {
 template <typename T>
 T inverse_mod(const T &number, const T &mod) {
   static_assert(std::numeric_limits<T>::is_integer);
+  using Signed_T = std::make_signed_t<T>;
   T n = modular_internal::normalize(number, mod);
-  auto [x, y] = exgcd(n, mod);
+  auto [x, y] = exgcd(static_cast<Signed_T>(n), static_cast<Signed_T>(mod));
   // Note that this will not overflow. If T has b bits, x*n + y*mod should be
   // equal to k * 2^b + 1 and by definition of exgcd, k must be zero.
-  if (x * n + y * mod != 1) {
+  if (x * static_cast<Signed_T>(n) + y * static_cast<Signed_T>(mod) != 1) {
     // TODO: Use std::format once it is supported to provide more detailed error
     // message.
     //
@@ -65,7 +66,7 @@ T inverse_mod(const T &number, const T &mod) {
     //   exist in modulo {}.", number, mod));
     throw std::domain_error("The modular inverse does not exist.");
   }
-  return modular_internal::normalize(std::move(x), mod);
+  return modular_internal::normalize(std::move(x), static_cast<Signed_T>(mod));
 }
 
 // Ring of integers modulo |mod|.
@@ -125,6 +126,10 @@ class Modular {
     check_multiplication_overflow();
     return Modular(value_ * rhs.value_);
   }
+
+  // Division in the modular ring. Throws std::domain_error if the
+  // multiplicative inverse does not exist.
+  Modular divide(const Modular &rhs) const { return multiply(rhs.inverse()); }
 
   // Multiplicative inverse in the modular ring.
   Modular inverse() const { return inverse_mod(value_, modulus); }
@@ -243,10 +248,12 @@ concept ModularType = is_modular<T>;
 OVERLOAD_MODULAR_ARITHMETIC_OPERATOR(+, add)
 OVERLOAD_MODULAR_ARITHMETIC_OPERATOR(-, subtract)
 OVERLOAD_MODULAR_ARITHMETIC_OPERATOR(*, multiply)
+OVERLOAD_MODULAR_ARITHMETIC_OPERATOR(/, divide)
 
 OVERLOAD_MODULAR_INPLACE_OPERATOR(+=, add)
 OVERLOAD_MODULAR_INPLACE_OPERATOR(-=, subtract)
 OVERLOAD_MODULAR_INPLACE_OPERATOR(*=, multiply)
+OVERLOAD_MODULAR_INPLACE_OPERATOR(/=, divide)
 
 OVERLOAD_MODULAR_COMPARISON_OPERATOR(==, equal)
 OVERLOAD_MODULAR_COMPARISON_OPERATOR(!=, not_equal)
