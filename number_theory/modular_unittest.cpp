@@ -183,13 +183,19 @@ TEST(ModularTest, IOStream) {
 
 template <typename T>
 void test_modular_inverse() {
-  T num = 7;
-  T mod = 26;
-  EXPECT_EQ(inverse(num, mod), 15);
+  using Mod10 = Modular<T(10)>;
 
-  num = 8;
-  mod = 41;
-  EXPECT_EQ(inverse(num, mod), 36);
+  T num = 7;
+  EXPECT_EQ(inverse_mod(num, T(10)), 3);
+  EXPECT_EQ(Mod10(num).inverse(), 3);
+
+  // num = 9;
+  // EXPECT_EQ(inverse_mod(num, 10), 9);
+  // EXPECT_EQ(Mod10(num).inverse(), 9);
+
+  // num = 5;
+  // EXPECT_THROW(inverse_mod(num, 10), std::domain_error);
+  // EXPECT_THROW(Mod10(num), std::domain_error);
 }
 
 TEST(ModularTest, Inverse) {
@@ -197,10 +203,6 @@ TEST(ModularTest, Inverse) {
   test_modular_inverse<int16_t>();
   test_modular_inverse<int32_t>();
   test_modular_inverse<int64_t>();
-  // test_modular_inverse<uint8_t>();
-  // test_modular_inverse<uint16_t>();
-  // test_modular_inverse<uint32_t>();
-  // test_modular_inverse<uint64_t>();
 }
 
 }  // namespace number_theory

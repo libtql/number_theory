@@ -7,8 +7,8 @@
 #include <concepts>
 #include <iostream>
 #include <limits>
-#include <type_traits>
 #include <stdexcept>
+#include <type_traits>
 
 #include "number_theory/numeric.h"
 #include "number_theory/utility.h"
@@ -47,6 +47,26 @@ struct ModulusWrapper {
 };
 
 }  // namespace modular_internal
+
+// Returns the modular inverse of |number| in modulo |mod| if exists.
+// Otherwise, throws an invalid_argument exception.
+template <typename T>
+T inverse_mod(const T &number, const T &mod) {
+  static_assert(std::numeric_limits<T>::is_integer);
+  T n = modular_internal::normalize(number, mod);
+  auto [x, y] = exgcd(n, mod);
+  // Note that this will not overflow. If T has b bits, x*n + y*mod should be
+  // equal to k * 2^b + 1 and by definition of exgcd, k must be zero.
+  if (x * n + y * mod != 1) {
+    // TODO: Use std::format once it is supported to provide more detailed error
+    // message.
+    //
+    // throw std::domain_error(std::format("The inverse of {} does not
+    //   exist in modulo {}.", number, mod));
+    throw std::domain_error("The modular inverse does not exist.");
+  }
+  return modular_internal::normalize(std::move(x), mod);
+}
 
 // Ring of integers modulo |mod|.
 template <modular_internal::ModulusWrapper mod>
@@ -106,6 +126,9 @@ class Modular {
     return Modular(value_ * rhs.value_);
   }
 
+  // Multiplicative inverse in the modular ring.
+  Modular inverse() const { return inverse_mod(value_, modulus); }
+
   // Compares for equality.
   bool equal(const Modular &rhs) const { return value_ == rhs.value_; }
   bool not_equal(const Modular &rhs) const { return !equal(rhs); }
@@ -133,19 +156,6 @@ class Modular {
                   "Please use larger integer types.");
   }
 };
-
-// Returns the modular inverse of |number| in modulo |mod| if exists.
-// Otherwise, throws an invalid_argument exception.
-template <typename T,
-          std::enable_if_t<std::numeric_limits<T>::is_integer, bool> = true>
-T inverse(T number, T mod) {
-  T num = modular_internal::normalize(std::move(number), mod);
-  auto [x, y] = exgcd(num, mod);
-  if (x * num + y * mod != 1) {
-    throw std::invalid_argument("The inverse does not exist.");
-  }
-  return modular_internal::normalize(std::move(x), mod);
-}
 
 namespace modular_internal {
 
@@ -271,7 +281,7 @@ std::ostream &operator<<(std::ostream &stream, const M &modular) {
 
 }  // namespace number_theory
 
-using number_theory::inverse;
+using number_theory::inverse_mod;
 using number_theory::Modular;
 
 }  // namespace tql
