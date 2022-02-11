@@ -51,14 +51,17 @@ struct ModulusWrapper {
 // Returns the modular inverse of |number| in modulo |mod| if exists.
 // Otherwise, throws an invalid_argument exception.
 template <typename T>
-T inverse_mod(const T &number, const T &mod) {
-  static_assert(std::numeric_limits<T>::is_integer);
+T inverse_mod(const T &number, const T &modulus) {
+  static_assert(std::numeric_limits<T>::is_integer, "inverse_mod requires integer argument type.");
   using Signed_T = std::make_signed_t<T>;
-  T n = modular_internal::normalize(number, mod);
-  auto [x, y] = exgcd(static_cast<Signed_T>(n), static_cast<Signed_T>(mod));
+  Signed_T num = static_cast<Signed_T>(number);
+  Signed_T mod = static_cast<Signed_T>(modulus);
+  if (mod <= 0)
+    throw std::invalid_argument("The modulus must be positive.");
+  auto [x, y] = exgcd(num, mod);
   // Note that this will not overflow. If T has b bits, x*n + y*mod should be
   // equal to k * 2^b + 1 and by definition of exgcd, k must be zero.
-  if (x * static_cast<Signed_T>(n) + y * static_cast<Signed_T>(mod) != 1) {
+  if (x * num + y * mod != 1) {
     // TODO: Use std::format once it is supported to provide more detailed error
     // message.
     //
@@ -66,7 +69,7 @@ T inverse_mod(const T &number, const T &mod) {
     //   exist in modulo {}.", number, mod));
     throw std::domain_error("The modular inverse does not exist.");
   }
-  return modular_internal::normalize(std::move(x), static_cast<Signed_T>(mod));
+  return modular_internal::normalize(std::move(x), mod);
 }
 
 // Ring of integers modulo |mod|.
