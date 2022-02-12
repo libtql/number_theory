@@ -50,5 +50,19 @@ TEST(NumericTest, ExGCD) {
   test_exgcd(1, std::numeric_limits<int>::min());
 }
 
+TEST(NumericTest, Pow) {
+  // test integer exponents
+  EXPECT_EQ(pow(int8_t(1), -1), 1);
+  EXPECT_EQ(pow(int16_t(2), 0), 1);
+  EXPECT_EQ(pow(int32_t(5), 10), 9765625);
+  EXPECT_EQ(pow(int64_t(10), -2), 0);
+  EXPECT_FLOAT_EQ(pow(2.2f, 3), 10.648f);
+  EXPECT_DOUBLE_EQ(pow(1e-3, -10), 1e30);
+
+  // test floating point exponents
+  EXPECT_FLOAT_EQ(pow(3.0f, -0.5f), 1.0f / std::sqrt(3.0f));
+  EXPECT_DOUBLE_EQ(pow(2, 1.1), std::pow(2, 1.1));
+}
+
 }  // namespace number_theory
 }  // namespace tql

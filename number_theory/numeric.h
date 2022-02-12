@@ -70,7 +70,7 @@ T pow(T base, const U &exponent) {
 
   Unsigned_U abs_exp = unsigned_abs(exponent);
   Pair_TT state = binary_accumulate<Unsigned_U, Pair_TT>(
-      abs_exp, std::make_pair(1, std::move(base)), update);
+      abs_exp, std::make_pair(T(1), std::move(base)), update);
   T result = std::move(state.first);
 
   // Return the inverse of the result if the exponent is negative.
