@@ -44,7 +44,8 @@ constexpr T numeric_cast(U number) {
       std::numeric_limits<T>::is_integer && std::numeric_limits<U>::is_integer,
       "numeric_cast can be done only between integer types.");
   if (!std::in_range<T>(number)) {
-    throw std::invalid_argument("Failed to numeric_cast without overflow/underflow.");
+    throw std::invalid_argument(
+        "Failed to numeric_cast without overflow/underflow.");
   }
   return static_cast<T>(number);
 }
