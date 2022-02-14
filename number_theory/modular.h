@@ -37,14 +37,14 @@ constexpr T normalize(T x, T modulus) {
 }
 
 // Casts |number| to given type and returns the result.
-// Throws invalid_argument exception if the conversion does overflow/underflow.
+// Throws range_error exception if the conversion does overflow/underflow.
 template <typename T, typename U>
 constexpr T numeric_cast(U number) {
   static_assert(
       std::numeric_limits<T>::is_integer && std::numeric_limits<U>::is_integer,
       "numeric_cast can be done only between integer types.");
   if (!std::in_range<T>(number)) {
-    throw std::invalid_argument(
+    throw std::range_error(
         "Failed to numeric_cast without overflow/underflow.");
   }
   return static_cast<T>(number);
@@ -63,8 +63,8 @@ struct ModulusWrapper {
 
 }  // namespace modular_internal
 
-// Returns the modular inverse of |number| in modulo |mod| if exists.
-// Otherwise, throws invalid_argument exception.
+// Returns the modular inverse of |number| in modulo |modulus| if exists.
+// Otherwise, throws domain_error exception.
 template <typename T>
 T inverse_mod(const T &number, const T &modulus) {
   static_assert(std::numeric_limits<T>::is_integer,
