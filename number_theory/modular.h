@@ -21,9 +21,10 @@ namespace modular_internal {
 // Returns the equivalent element of |x| in the ring of integers modulo
 // |modulus|. The result |y| should statisfy 0 <= y < modulus, and
 // y = k*modulus + x for some integer k.
-template <typename T,
-          std::enable_if_t<std::numeric_limits<T>::is_integer, bool> = true>
+template <typename T>
 constexpr T normalize(T x, T modulus) {
+  static_assert(std::numeric_limits<T>::is_integer,
+                "normalize arguments must be integers.");
   T y = std::move(x);
   if (y < 0 || y >= modulus) {
     y %= modulus;
