@@ -7,8 +7,11 @@
 #include <concepts>
 #include <iostream>
 #include <limits>
+#include <stdexcept>
 #include <type_traits>
+#include <utility>
 
+#include "number_theory/numeric.h"
 #include "number_theory/utility.h"
 
 // Modular arithmetic
@@ -34,6 +37,20 @@ constexpr T normalize(T x, T modulus) {
   return y;
 }
 
+// Casts |number| to given type and returns the result.
+// Throws range_error exception if the conversion does overflow/underflow.
+template <typename T, typename U>
+constexpr T numeric_cast(U number) {
+  static_assert(
+      std::numeric_limits<T>::is_integer && std::numeric_limits<U>::is_integer,
+      "numeric_cast can be done only between integer types.");
+  if (!std::in_range<T>(number)) {
+    throw std::range_error(
+        "Failed to numeric_cast without overflow/underflow.");
+  }
+  return static_cast<T>(number);
+}
+
 // Wrapper of a modulus of type T.
 // This is a helper class that wraps the template arguments for the Modular
 // class, so that we can pass a single constant to the Modular template without
@@ -46,6 +63,31 @@ struct ModulusWrapper {
 };
 
 }  // namespace modular_internal
+
+// Returns the modular inverse of |number| in modulo |modulus| if exists.
+// Otherwise, throws domain_error exception.
+template <typename T>
+T inverse_mod(const T &number, const T &modulus) {
+  static_assert(std::numeric_limits<T>::is_integer,
+                "inverse_mod arguments must be integers.");
+  using Signed_T = std::make_signed_t<T>;
+  Signed_T num = modular_internal::numeric_cast<Signed_T>(number);
+  Signed_T mod = modular_internal::numeric_cast<Signed_T>(modulus);
+  if (mod <= 0)
+    throw std::invalid_argument("The modulus must be positive.");
+  auto [x, y] = exgcd(num, mod);
+  // Note that this will not overflow. If T has b bits, x*n + y*mod should be
+  // equal to k * 2^b + 1 and by definition of exgcd, k must be zero.
+  if (x * num + y * mod != 1) {
+    // TODO: Use std::format once it is supported to provide more detailed error
+    // message.
+    //
+    // throw std::domain_error(std::format("The inverse of {} does not
+    //   exist in modulo {}.", number, mod));
+    throw std::domain_error("The modular inverse does not exist.");
+  }
+  return modular_internal::normalize(std::move(x), mod);
+}
 
 // Ring of integers modulo |mod|.
 template <modular_internal::ModulusWrapper mod>
@@ -104,6 +146,13 @@ class Modular {
     check_multiplication_overflow();
     return Modular(value_ * rhs.value_);
   }
+
+  // Division in the modular ring. Throws std::domain_error if the
+  // multiplicative inverse does not exist.
+  Modular divide(const Modular &rhs) const { return multiply(rhs.inverse()); }
+
+  // Multiplicative inverse in the modular ring.
+  Modular inverse() const { return inverse_mod(value_, modulus); }
 
   // Compares for equality.
   bool equal(const Modular &rhs) const { return value_ == rhs.value_; }
@@ -219,10 +268,12 @@ concept ModularType = is_modular<T>;
 OVERLOAD_MODULAR_ARITHMETIC_OPERATOR(+, add)
 OVERLOAD_MODULAR_ARITHMETIC_OPERATOR(-, subtract)
 OVERLOAD_MODULAR_ARITHMETIC_OPERATOR(*, multiply)
+OVERLOAD_MODULAR_ARITHMETIC_OPERATOR(/, divide)
 
 OVERLOAD_MODULAR_INPLACE_OPERATOR(+=, add)
 OVERLOAD_MODULAR_INPLACE_OPERATOR(-=, subtract)
 OVERLOAD_MODULAR_INPLACE_OPERATOR(*=, multiply)
+OVERLOAD_MODULAR_INPLACE_OPERATOR(/=, divide)
 
 OVERLOAD_MODULAR_COMPARISON_OPERATOR(==, equal)
 OVERLOAD_MODULAR_COMPARISON_OPERATOR(!=, not_equal)
@@ -257,6 +308,7 @@ std::ostream &operator<<(std::ostream &stream, const M &modular) {
 
 }  // namespace number_theory
 
+using number_theory::inverse_mod;
 using number_theory::Modular;
 
 }  // namespace tql

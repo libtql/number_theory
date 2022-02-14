@@ -2,6 +2,7 @@
 
 #include <limits>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 #include <type_traits>
 
@@ -58,6 +59,14 @@ void test_modular_basic() {
   EXPECT_EQ(c.get(), T(8));
   c = a.multiply(b);
   EXPECT_EQ(c.get(), T(4));
+  EXPECT_THROW(a.divide(b), std::domain_error);
+  a = T(9), b = T(7);
+  c = a.divide(b);
+  EXPECT_EQ(c.get(), T(7));
+  c = b.divide(a);
+  EXPECT_EQ(c.get(), T(3));
+  c = a.divide(a);
+  EXPECT_EQ(c.get(), T(1));
 
   // test comparisons
   c = T(3);
@@ -109,6 +118,19 @@ void test_modular_operators() {
   EXPECT_EQ(b, 5);
   a *= 10;
   EXPECT_EQ(a, 0);
+
+  // test division
+  a = 9, b = 7;
+  EXPECT_EQ(a / b, 7);
+  EXPECT_EQ(b / a, 3);
+  EXPECT_EQ(a / a, 1);
+  EXPECT_EQ(b / b, 1);
+  a /= b;
+  EXPECT_EQ(a, 7);
+  a /= a;
+  EXPECT_EQ(a, 1);
+  a = 6, b = 4;
+  EXPECT_THROW(a /= b, std::domain_error);
 
   // test comparison
   EXPECT_EQ(Mod10(1), 11);
@@ -179,6 +201,34 @@ TEST(ModularTest, IOStream) {
   test_modular_iostream<uint16_t>();
   test_modular_iostream<uint32_t>();
   test_modular_iostream<uint64_t>();
+}
+
+template <typename T>
+void test_modular_inverse() {
+  using Mod10 = Modular<T(10)>;
+
+  T num = 7;
+  EXPECT_EQ(inverse_mod(num, T(10)), 3);
+  EXPECT_EQ(Mod10(num).inverse(), 3);
+
+  num = 9;
+  EXPECT_EQ(inverse_mod(num, T(10)), 9);
+  EXPECT_EQ(Mod10(num).inverse(), 9);
+
+  num = 5;
+  EXPECT_THROW(inverse_mod(num, T(10)), std::domain_error);
+  EXPECT_THROW(Mod10(num).inverse(), std::domain_error);
+}
+
+TEST(ModularTest, Inverse) {
+  test_modular_inverse<int8_t>();
+  test_modular_inverse<int16_t>();
+  test_modular_inverse<int32_t>();
+  test_modular_inverse<int64_t>();
+  test_modular_inverse<uint8_t>();
+  test_modular_inverse<uint16_t>();
+  test_modular_inverse<uint32_t>();
+  test_modular_inverse<uint64_t>();
 }
 
 }  // namespace number_theory
