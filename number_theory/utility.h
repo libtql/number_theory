@@ -63,6 +63,8 @@ constexpr int sign(const T &x) {
 // std::abs(std::numeric_limits<T>::min()) is undefined.
 template <typename T>
 constexpr std::make_unsigned_t<T> unsigned_abs(const T &x) {
+  static_assert(std::numeric_limits<T>::is_integer,
+                "unsigned_abs argument |x| must be an integer.");
   return static_cast<std::make_unsigned_t<T>>(x < 0 ? 0u - x : x);
 }
 
