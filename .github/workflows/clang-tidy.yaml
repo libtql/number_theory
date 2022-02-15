@@ -15,3 +15,4 @@ jobs:
           apt_packages: libgtest-dev
           build_dir: out
           cmake_command: cmake -B out
+          config_file: .clang-tidy
