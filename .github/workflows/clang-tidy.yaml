@@ -12,7 +12,7 @@ jobs:
       - name: Lint with clang-tidy.
         uses: ZedThree/clang-tidy-review@v0.8.2
         with:
-          apt_packages: libgtest-dev
+          apt_packages: [libgtest-dev, g++-10]
           build_dir: out
           cmake_command: cmake -B out
           config_file: .clang-tidy
