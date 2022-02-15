@@ -7,8 +7,7 @@
 
 // Public utility functions.
 
-namespace tql {
-namespace number_theory {
+namespace tql::number_theory {
 
 // Accumulates values according to the binary representation of |binary|.
 // If |binary| is negative, the two's complement representation will be used.
@@ -55,7 +54,6 @@ constexpr std::make_unsigned_t<T> unsigned_abs(const T &x) {
   return static_cast<std::make_unsigned_t<T>>(x < 0 ? -x : x);
 }
 
-}  // namespace number_theory
-}  // namespace tql
+}  // namespace tql::number_theory
 
 #endif  // NUMBER_THEORY_UTILITY_H_

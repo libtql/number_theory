@@ -10,8 +10,7 @@
 
 #include "number_theory/modular.h"
 
-namespace tql {
-namespace number_theory {
+namespace tql::number_theory {
 
 template <typename T>
 void test_modular_basic() {
@@ -231,5 +230,4 @@ TEST(ModularTest, Inverse) {
   test_modular_inverse<uint64_t>();
 }
 
-}  // namespace number_theory
-}  // namespace tql
+}  // namespace tql::number_theory

@@ -59,7 +59,10 @@ template <typename T>
 struct ModulusWrapper {
   using type = T;
   T value;
-  constexpr ModulusWrapper(T x) : value(std::move(x)) {}
+  // This is not an explicit constructor because we want to upgrade integer
+  // types to ModulusWrapper seamlessly.
+  constexpr ModulusWrapper(T x)  // NOLINT(runtime/explicit)
+      : value(std::move(x)) {}
 };
 
 }  // namespace modular_internal
@@ -103,7 +106,9 @@ class Modular {
 
   // This is an implicit constructor. We implicitly upgrade from Modular::type
   // to Modular to make it easier to use.
-  Modular(type value = 0) { set(std::move(value)); }
+  Modular(type value = 0) {  // NOLINT(runtime/explicit)
+    set(std::move(value));
+  }
 
   Modular(const Modular &other) = default;
   Modular(Modular &&other) = default;
@@ -112,7 +117,7 @@ class Modular {
 
   // This is an implicit conversion, because we want a seamless conversion from
   // Modular to Modular::type.
-  operator type() const { return get(); }
+  operator type() const { return get(); }  // NOLINT(runtime/explicit)
 
   // Retrieves the value as Modular::type.
   const type &get() const { return value_; }
