@@ -1,10 +1,15 @@
 name: clang-tidy
 
-on: [pull_request]
+on: [pull_request_target]
 
 jobs:
   job:
     runs-on: ubuntu-latest
+
+    # Since pull_request_target is not safe, this job requires approval before running.
+    # https://securitylab.github.com/research/github-actions-preventing-pwn-requests/
+    environment:
+      name: Privileged Environment
 
     steps:
       - uses: actions/checkout@v2
