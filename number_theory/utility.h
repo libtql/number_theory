@@ -3,6 +3,7 @@
 
 #include <functional>
 #include <limits>
+#include <stdexcept>
 #include <type_traits>
 
 // Public utility functions.
