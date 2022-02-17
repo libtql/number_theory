@@ -69,6 +69,10 @@ TEST(NumericTest, Pow) {
   EXPECT_EQ(pow(int16_t(2), 0), 1);
   EXPECT_EQ(pow(int32_t(5), 10), 9765625);
   EXPECT_EQ(pow(int64_t(10), -2), 0);
+  EXPECT_EQ(pow(uint8_t(1), -1), 1);
+  EXPECT_EQ(pow(uint16_t(2), 0), 1);
+  EXPECT_EQ(pow(uint32_t(5), 10), 9765625);
+  EXPECT_EQ(pow(uint64_t(10), -2), 0);
   EXPECT_FLOAT_EQ(pow(2.2f, 3), 10.648f);
   EXPECT_DOUBLE_EQ(pow(1e-3, -10), 1e30);
 
