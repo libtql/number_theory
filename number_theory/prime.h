@@ -30,7 +30,7 @@ class EulerSieve {
   using type = T;
 
   // Constructs the Sieve in linear time.
-  explicit EulerSieve(T num_limit)
+  explicit EulerSieve(const T &num_limit)
       : num_limit_(num_limit),
         min_prime_factor_(numeric_cast<size_t>(num_limit) + 1) {
     check_overflow();
