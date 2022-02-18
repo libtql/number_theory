@@ -35,7 +35,7 @@ class EulerSieve {
 
   // Constructs the Sieve in linear time.
   explicit EulerSieve(T num_limit)
-      : num_limit_(std::move(num_limit)), min_prime_factor_(num_limit_, T(0)) {
+      : num_limit_(std::move(num_limit)), min_prime_factor_(num_limit_) {
     // Detect overflow.
     size_t num_limit_width =
         std::bit_width(static_cast<std::make_unsigned_t<T>>(num_limit_));
