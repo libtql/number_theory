@@ -21,7 +21,7 @@ namespace number_theory {
 // The numbers are of type |T|, but they are converted to type |U| during
 // multiplication to avoid overflow.
 template <typename T, typename U = uint64_t>
-class Sieve {
+class EulerSieve {
   static_assert(std::numeric_limits<T>::is_integer &&
                     std::numeric_limits<U>::is_integer,
                 "Sieve must use integer types.");
@@ -31,7 +31,7 @@ class Sieve {
   using type = T;
 
   // Constructs the Sieve in linear time.
-  explicit Sieve(T num_limit)
+  explicit EulerSieve(T num_limit)
       : num_limit_(std::move(num_limit)), min_prime_factor_(num_limit_, T(0)) {
     // Detect overflow.
     size_t num_limit_width =
@@ -58,10 +58,10 @@ class Sieve {
     }
   }
 
-  Sieve(const Sieve &other) = default;
-  Sieve(Sieve &&other) = default;
-  Sieve &operator=(const Sieve &other) = default;
-  Sieve &operator=(Sieve &&other) = default;
+  EulerSieve(const EulerSieve &other) = default;
+  EulerSieve(EulerSieve &&other) = default;
+  EulerSieve &operator=(const EulerSieve &other) = default;
+  EulerSieve &operator=(EulerSieve &&other) = default;
 
   // Returns the maximum number (exclusive) we can hold.
   const T &get_limit() const { return num_limit_; }
@@ -90,7 +90,7 @@ class Sieve {
 
 }  // namespace number_theory
 
-using number_theory::Sieve;
+using number_theory::EulerSieve;
 
 }  // namespace tql
 
