@@ -29,7 +29,7 @@ class EulerSieve {
   // The type of numbers used by the Sieve.
   using type = T;
 
-  // Constructs the Sieve in linear time.
+  // Constructs the sieve in linear time.
   explicit EulerSieve(const T &num_limit)
       : num_limit_(num_limit),
         min_prime_factor_(numeric_cast<size_t>(num_limit) + 1) {
@@ -64,7 +64,6 @@ class EulerSieve {
 
   // Returns the minimum prime factor of the |number|.
   // Throws domain_error exception if minimum prime factor does not exist.
-  // Throws out_of_range exception if |number| exceeds the limit.
   T min_prime_factor(const T &number) const {
     auto abs_num = unsigned_abs(number);
     if (abs_num <= 1)
