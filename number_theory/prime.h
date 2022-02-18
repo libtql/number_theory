@@ -20,13 +20,9 @@ namespace number_theory {
 // Sieve of Euler.
 // It finds all prime numbers under a certain limit.
 // It also provides the factorizations of all numbers under the limit.
-//
-// The numbers are of type |T|, but they are converted to type |U| during
-// multiplication to avoid overflow.
-template <typename T, typename U = uint64_t>
+template <typename T>
 class EulerSieve {
-  static_assert(std::numeric_limits<T>::is_integer &&
-                    std::numeric_limits<U>::is_integer,
+  static_assert(std::numeric_limits<T>::is_integer,
                 "Sieve must use integer types.");
 
  public:
@@ -36,15 +32,8 @@ class EulerSieve {
   // Constructs the Sieve in linear time.
   explicit EulerSieve(T num_limit)
       : num_limit_(num_limit),
-        min_prime_factor_(static_cast<size_t>(num_limit) + 1) {
-    // Detect overflow.
-    size_t num_limit_width =
-        std::bit_width(static_cast<std::make_unsigned_t<T>>(num_limit_));
-    if (num_limit_width * 2 > std::numeric_limits<U>::digits)
-      throw std::overflow_error(
-          "Multiplication will overflow when sieving. "
-          "Please use larger integer types.");
-
+        min_prime_factor_(numeric_cast<size_t>(num_limit) + 1) {
+    check_overflow();
     // Euler's Sieve algorithm
     for (T num = 2; num <= num_limit_; ++num) {
       if (min_prime_factor_[num] == 0) {
@@ -54,8 +43,8 @@ class EulerSieve {
       for (const T &prime : primes_) {
         if (prime > min_prime_factor_[num])
           break;
-        U x = static_cast<U>(prime) * static_cast<U>(num);
-        if (x > static_cast<U>(num_limit_))
+        MultType x = static_cast<MultType>(prime) * static_cast<MultType>(num);
+        if (x > static_cast<MultType>(num_limit_))
           break;
         min_prime_factor_[x] = prime;
       }
@@ -74,8 +63,8 @@ class EulerSieve {
   const std::vector<T> &primes() const { return primes_; }
 
   // Returns the minimum prime factor of the |number|.
-  // Throws domain_error if minimum prime factor does not exist.
-  // Throws out_of_range if |number| exceeds the limit.
+  // Throws domain_error exception if minimum prime factor does not exist.
+  // Throws out_of_range exception if |number| exceeds the limit.
   T min_prime_factor(const T &number) const {
     auto abs_num = unsigned_abs(number);
     if (abs_num <= 1)
@@ -92,6 +81,21 @@ class EulerSieve {
   std::vector<T> min_prime_factor_;
   // Prime numbers.
   std::vector<T> primes_;
+
+  // Numbers are converted to MultType during multiplication to avoid overflow.
+  // uint64_t is large enough due to the time and space complexity of the sieve
+  // algorithm.
+  using MultType = uint64_t;
+
+  // Throws overflow_error exception if multiplication will overflow.
+  void check_overflow() {
+    size_t num_limit_width =
+        std::bit_width(static_cast<std::make_unsigned_t<T>>(num_limit_));
+    if (num_limit_width * 2 > std::numeric_limits<MultType>::digits)
+      throw std::overflow_error(
+          "Multiplication will overflow when sieving. "
+          "Please use larger integer types.");
+  }
 };
 
 // Tests whether |number| is prime or not.
