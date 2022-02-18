@@ -74,7 +74,7 @@ class EulerSieve {
     auto abs_num = unsigned_abs(number);
     if (abs_num <= 1)
       throw std::domain_error("Minimum prime factor does not exist.");
-    if (abs_num >= num_limit_)
+    if (abs_num >= static_cast<std::make_unsigned_t<T>>(num_limit_))
       throw std::out_of_range("The number exceeds the limit of Sieve.");
     return min_prime_factor_[abs_num];
   }
