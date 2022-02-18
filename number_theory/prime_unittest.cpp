@@ -6,7 +6,7 @@
 
 #include <gtest/gtest.h>
 
-#include "number_theory/sieve.h"
+#include "number_theory/prime.h"
 
 namespace tql::number_theory {
 
