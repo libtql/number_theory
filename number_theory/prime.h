@@ -35,7 +35,8 @@ class EulerSieve {
 
   // Constructs the Sieve in linear time.
   explicit EulerSieve(T num_limit)
-      : num_limit_(std::move(num_limit)), min_prime_factor_(num_limit_) {
+      : num_limit_(num_limit),
+        min_prime_factor_(static_cast<size_t>(num_limit) + 1) {
     // Detect overflow.
     size_t num_limit_width =
         std::bit_width(static_cast<std::make_unsigned_t<T>>(num_limit_));
@@ -45,7 +46,7 @@ class EulerSieve {
           "Please use larger integer types.");
 
     // Euler's Sieve algorithm
-    for (T num = 2; num < num_limit_; ++num) {
+    for (T num = 2; num <= num_limit_; ++num) {
       if (min_prime_factor_[num] == 0) {
         primes_.push_back(num);
         min_prime_factor_[num] = num;
@@ -54,7 +55,7 @@ class EulerSieve {
         if (prime > min_prime_factor_[num])
           break;
         U x = static_cast<U>(prime) * static_cast<U>(num);
-        if (x >= static_cast<U>(num_limit_))
+        if (x > static_cast<U>(num_limit_))
           break;
         min_prime_factor_[x] = prime;
       }
@@ -66,7 +67,7 @@ class EulerSieve {
   EulerSieve &operator=(const EulerSieve &other) = default;
   EulerSieve &operator=(EulerSieve &&other) = default;
 
-  // Returns the maximum number (exclusive) we can hold.
+  // Returns the maximum number (inclusive) we can hold.
   const T &get_limit() const { return num_limit_; }
 
   // Returns the list of primes.
@@ -79,13 +80,13 @@ class EulerSieve {
     auto abs_num = unsigned_abs(number);
     if (abs_num <= 1)
       throw std::domain_error("Minimum prime factor does not exist.");
-    if (abs_num >= static_cast<std::make_unsigned_t<T>>(num_limit_))
+    if (abs_num > static_cast<std::make_unsigned_t<T>>(num_limit_))
       throw std::out_of_range("The number exceeds the limit of Sieve.");
     return min_prime_factor_[abs_num];
   }
 
  private:
-  // The maximum number (exclusive) we can hold.
+  // The maximum number (inclusive) we can hold.
   T num_limit_;
   // Minimum prime factors.
   std::vector<T> min_prime_factor_;

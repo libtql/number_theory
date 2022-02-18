@@ -12,7 +12,8 @@ namespace tql::number_theory {
 
 template <typename T>
 void test_euler_sieve_primes() {
-  EulerSieve sieve{T(100)};
+  EulerSieve sieve{T(97)};
+  EXPECT_EQ(sieve.get_limit(), 97);
   std::vector<T> primes = sieve.primes();
   std::vector<int> expected{2,  3,  5,  7,  11, 13, 17, 19, 23, 29, 31, 37, 41,
                             43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97};
@@ -43,7 +44,7 @@ void test_min_prime_factor() {
   }
   EXPECT_THROW(sieve.min_prime_factor(0), std::domain_error);
   EXPECT_THROW(sieve.min_prime_factor(1), std::domain_error);
-  EXPECT_THROW(sieve.min_prime_factor(100), std::out_of_range);
+  EXPECT_THROW(sieve.min_prime_factor(101), std::out_of_range);
 }
 
 TEST(EulerSieveTest, MinPrimeFactor) {
