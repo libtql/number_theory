@@ -73,6 +73,8 @@ class EulerSieve {
   const std::vector<T> &primes() const { return primes_; }
 
   // Returns the minimum prime factor of the |number|.
+  // Throws domain_error if minimum prime factor does not exist.
+  // Throws out_of_range if |number| exceeds the limit.
   T min_prime_factor(const T &number) const {
     auto abs_num = unsigned_abs(number);
     if (abs_num <= 1)
