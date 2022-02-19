@@ -81,5 +81,39 @@ TEST(NumericTest, Pow) {
   EXPECT_DOUBLE_EQ(pow(2, 1.1), std::pow(2, 1.1));
 }
 
+template <typename T>
+void test_integer_root() {
+  // test small numbers
+  EXPECT_EQ(integer_root(T(120), 2), 10);
+  EXPECT_EQ(integer_root(T(125), 3), 5);
+  EXPECT_EQ(integer_root(T(0), 1), 0);
+  if (std::numeric_limits<T>::is_signed) {
+    EXPECT_EQ(integer_root(T(-125), 3), -5);
+    EXPECT_EQ(integer_root(T(-30), 3), -3);
+  }
+
+  // test exceptions
+  EXPECT_THROW(integer_root(T(2), 0), std::domain_error);
+  if (std::numeric_limits<T>::is_signed)
+    EXPECT_THROW(integer_root(T(-4), 2), std::domain_error);
+}
+
+TEST(NumericTest, IntegerRoot) {
+  test_integer_root<int8_t>();
+  test_integer_root<int16_t>();
+  test_integer_root<int32_t>();
+  test_integer_root<int64_t>();
+  test_integer_root<uint8_t>();
+  test_integer_root<uint16_t>();
+  test_integer_root<uint32_t>();
+  test_integer_root<uint64_t>();
+
+  // test overflow
+  EXPECT_EQ(integer_root(std::numeric_limits<int32_t>::max(), 2), 46340);
+  EXPECT_EQ(integer_root(std::numeric_limits<uint32_t>::max(), 3), 1625);
+  EXPECT_EQ(integer_root(std::numeric_limits<int64_t>::min(), 5), -6208);
+  EXPECT_EQ(integer_root(std::numeric_limits<uint64_t>::max(), 10), 84);
+}
+
 }  // namespace number_theory
 }  // namespace tql
