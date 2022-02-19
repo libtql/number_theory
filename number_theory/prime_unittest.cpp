@@ -19,6 +19,9 @@ void test_sieve_primes() {
   Sieve sieve(T(97));
   for (T i = 0; i <= 97; ++i)
     EXPECT_EQ(sieve.is_prime(i), primes.contains(i));
+  if (std::numeric_limits<T>::is_signed)
+    EXPECT_FALSE(sieve.is_prime(-5));
+  EXPECT_THROW(sieve.is_prime(100), std::out_of_range);
 }
 
 TEST(SieveTest, Primes) {
