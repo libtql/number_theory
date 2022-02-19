@@ -18,7 +18,7 @@ namespace tql {
 namespace number_theory {
 
 // Sieve of Eratosthenes.
-// It decides whether a number is prime or not for the numbers up to given
+// It decides whether a number is prime or not for the numbers up to a given
 // (inclusive) limit.
 template <typename T>
 class Sieve {
@@ -34,6 +34,8 @@ class Sieve {
         is_prime_(numeric_cast<size_t>(num_limit) + 1, true) {
     is_prime_[0] = false;
     is_prime_[1] = false;
+    // Use uint64_t to avoid multiplication overflow. Due to the time and space
+    // complexity of the algorithm, uint64_t is large enough.
     for (uint64_t i = 2; i * i <= num_limit_; ++i) {
       if (!is_prime_[i])
         continue;
@@ -43,10 +45,10 @@ class Sieve {
     }
   }
 
-  Sieve(const Sieve &other) = default;
-  Sieve(Sieve &&other) = default;
-  Sieve &operator=(const Sieve &other) = default;
-  Sieve &operator=(Sieve &&other) = default;
+  Sieve(const Sieve &) = default;
+  Sieve(Sieve &&) = default;
+  Sieve &operator=(const Sieve &) = default;
+  Sieve &operator=(Sieve &&) = default;
 
   // Returns whether |number| is prime or not.
   bool is_prime(const T &number) {
