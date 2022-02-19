@@ -148,9 +148,9 @@ T integer_root(const T &x, const U &n) {
 
 using number_theory::exgcd;
 using number_theory::gcd;
+using number_theory::integer_root;
 using number_theory::lcm;
 using number_theory::pow;
-using number_theory::integer_root;
 
 }  // namespace tql
 
