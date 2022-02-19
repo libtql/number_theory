@@ -105,13 +105,12 @@ auto pow(T base, U exponent) -> decltype(std::pow(base, exponent)) {
 template <typename T,
           typename U,
           std::enable_if_t<std::numeric_limits<T>::digits <= 64, bool> = true>
-T integer_root(const T &x, const U &n) {
+T iroot(const T &x, const U &n) {
   static_assert(
       std::numeric_limits<T>::is_integer && std::numeric_limits<U>::is_integer,
-      "integer_root arguments must be integers.");
+      "iroot arguments must be integers.");
   if (n < 0)
-    throw std::invalid_argument(
-        "integer_root argument |n| should be positive.");
+    throw std::invalid_argument("iroot argument |n| should be positive.");
   if (n == 0)
     throw std::domain_error("The 0-th root does not exist.");
   if (x < 0 && n % 2 == 0)
@@ -148,7 +147,7 @@ T integer_root(const T &x, const U &n) {
 
 using number_theory::exgcd;
 using number_theory::gcd;
-using number_theory::integer_root;
+using number_theory::iroot;
 using number_theory::lcm;
 using number_theory::pow;
 
