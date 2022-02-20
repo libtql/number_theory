@@ -17,13 +17,61 @@
 namespace tql {
 namespace number_theory {
 
+// Sieve of Eratosthenes.
+// It decides whether a number is prime or not for the numbers up to a given
+// (inclusive) limit.
+template <typename T>
+class Sieve {
+  static_assert(std::numeric_limits<T>::is_integer,
+                "Sieve must use integer types.");
+
+ public:
+  // The type of numbers used by the Sieve.
+  using type = T;
+
+  explicit Sieve(const T &num_limit)
+      : num_limit_(num_limit),
+        is_prime_(numeric_cast<size_t>(num_limit) + 1, true) {
+    is_prime_[0] = false;
+    is_prime_[1] = false;
+    // Use uint64_t to avoid multiplication overflow. Due to the time and space
+    // complexity of the algorithm, uint64_t is large enough.
+    for (uint64_t i = 2; i * i <= num_limit_; ++i) {
+      if (!is_prime_[i])
+        continue;
+      for (uint64_t j = i * i; j <= num_limit_; j += i) {
+        is_prime_[j] = false;
+      }
+    }
+  }
+
+  Sieve(const Sieve &) = default;
+  Sieve(Sieve &&) = default;
+  Sieve &operator=(const Sieve &) = default;
+  Sieve &operator=(Sieve &&) = default;
+
+  // Returns whether |number| is prime or not.
+  bool is_prime(const T &number) {
+    if (number < 0)
+      return false;
+    if (number > num_limit_)
+      throw std::out_of_range("The number exceeds the limit of Sieve.");
+    return is_prime_[number];
+  }
+
+ private:
+  // The maximum number (inclusive) we can hold.
+  T num_limit_;
+  std::vector<bool> is_prime_;
+};
+
 // Sieve of Euler.
 // It finds all prime numbers under a certain limit.
 // It also provides the factorizations of all numbers under the limit.
 template <typename T>
 class EulerSieve {
   static_assert(std::numeric_limits<T>::is_integer,
-                "Sieve must use integer types.");
+                "EulerSieve must use integer types.");
 
  public:
   // The type of numbers used by the Sieve.
