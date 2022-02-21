@@ -4,8 +4,10 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#include <algorithm>
 #include <bit>
 #include <limits>
+#include <memory>
 #include <stdexcept>
 #include <type_traits>
 #include <vector>
@@ -146,6 +148,47 @@ class EulerSieve {
       throw std::overflow_error(
           "Multiplication will overflow when sieving. "
           "Please use larger integer types.");
+  }
+};
+
+// An incremental version of the EulerSieve.
+// It extends the number limit dynamically while keeping linear time complexity.
+template <typename T>
+class IncrementalEulerSieve {
+ public:
+  IncrementalEulerSieve(T num_limit = 2)
+      : sieve_(new EulerSieve(std::max<T>(num_limit, 2))) {}
+
+  // Returns the minimum prime factor of the |number|.
+  // Throws domain_error exception if minimum prime factor does not exist.
+  T min_prime_factor(const T &number) {
+    auto abs_num = unsigned_abs(number);
+    extend_(numeric_cast<T>(abs_num));
+    return sieve_->min_prime_factor(number);
+  }
+
+ private:
+  std::unique_ptr<EulerSieve<T>> sieve_;
+
+  // Returns the maximum number (inclusive) we currently hold.
+  const T &get_limit_() const { return sieve_->get_limit(); }
+
+  // Extends the limit to at least cover |number|.
+  void extend_(const T &number) {
+    if (number <= get_limit_())
+      return;
+    T current_limit = get_limit_();
+    T new_limit;
+    // Try to double the limit if possible, so we can achieve an amortized
+    // linear time complexity.
+    if (current_limit > std::numeric_limits<T>::max() / 2) {
+      new_limit = std::numeric_limits<T>::max();
+    } else {
+      new_limit = std::max(number, current_limit * 2);
+    }
+    // Release the old sieve and then allocate a new one.
+    sieve_.reset();
+    sieve_.reset(new EulerSieve(new_limit));
   }
 };
 
