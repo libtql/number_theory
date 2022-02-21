@@ -125,7 +125,7 @@ T iroot(const T &x, const U &n) {
       5,  5,  4,          4,       4,     4,    3,    3,   3,   3,   3,  3,  3,
       3,  3,  2,          2,       2,     2,    2,    2,   2,   2,   2,  2,  2,
       2,  2,  2,          2,       2,     2,    2,    2,   2,   2,   2,  2};
-  uint64_t y_limit = (n >= max_size ? 1 : y_limits[n]);
+  uint64_t y_limit = n >= max_size ? 1 : y_limits[n];
 
   // Binary search for the maximum y that y^n <= abs(x).
   uint64_t abs_x = unsigned_abs(x);
