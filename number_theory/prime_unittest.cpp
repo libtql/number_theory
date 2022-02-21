@@ -13,9 +13,9 @@ namespace tql::number_theory {
 
 template <typename T>
 void test_sieve_primes() {
-  std::unordered_set<int> primes{2,  3,  5,  7,  11, 13, 17, 19, 23,
-                                 29, 31, 37, 41, 43, 47, 53, 59, 61,
-                                 67, 71, 73, 79, 83, 89, 97};
+  std::unordered_set<T> primes{2,  3,  5,  7,  11, 13, 17, 19, 23,
+                               29, 31, 37, 41, 43, 47, 53, 59, 61,
+                               67, 71, 73, 79, 83, 89, 97};
   Sieve sieve(T(97));
   for (T i = 0; i <= 97; ++i)
     EXPECT_EQ(sieve.is_prime(i), primes.contains(i));
@@ -40,8 +40,8 @@ void test_euler_sieve_primes() {
   EulerSieve sieve{T(97)};
   EXPECT_EQ(sieve.get_limit(), 97);
   std::vector<T> primes = sieve.primes();
-  std::vector<int> expected{2,  3,  5,  7,  11, 13, 17, 19, 23, 29, 31, 37, 41,
-                            43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97};
+  std::vector<T> expected{2,  3,  5,  7,  11, 13, 17, 19, 23, 29, 31, 37, 41,
+                          43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97};
   ASSERT_EQ(primes.size(), expected.size());
   for (size_t i = 0; i < primes.size(); ++i)
     EXPECT_EQ(primes[i], expected[i]);
