@@ -128,7 +128,7 @@ T iroot(const T &x, const U &n) {
   uint64_t y_limit = n >= max_size ? 1 : y_limits[n];
 
   // Binary search for the maximum y that y^n <= abs(x).
-  uint64_t abs_x = unsigned_abs(x);
+  uint64_t abs_x = static_cast<uint64_t>(unsigned_abs(x));
   uint64_t y_min = 0;
   uint64_t y_max = std::min(abs_x, y_limit) + 1;
   while (y_max - y_min > 1) {
