@@ -93,7 +93,6 @@ void test_iroot() {
   }
 
   // test exceptions
-  EXPECT_THROW(iroot(T(2), 0), std::domain_error);
   if (std::numeric_limits<T>::is_signed)
     EXPECT_THROW(iroot(T(-4), 2), std::domain_error);
 }

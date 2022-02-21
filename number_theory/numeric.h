@@ -109,10 +109,8 @@ T iroot(const T &x, const U &n) {
   static_assert(
       std::numeric_limits<T>::is_integer && std::numeric_limits<U>::is_integer,
       "iroot arguments must be integers.");
-  if (n < 0)
+  if (n <= 0)
     throw std::invalid_argument("iroot argument |n| should be positive.");
-  if (n == 0)
-    throw std::domain_error("The 0-th root does not exist.");
   if (x < 0 && n % 2 == 0)
     throw std::domain_error("Negative numbers do not have even roots.");
 
