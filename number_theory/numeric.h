@@ -133,10 +133,11 @@ T iroot(const T &x, const U &n) {
   uint64_t y_max = std::min(abs_x, y_limit) + 1;
   while (y_max - y_min > 1) {
     uint64_t y_mid = std::midpoint(y_min, y_max);
-    if (pow(y_mid, n) > abs_x)
+    if (pow(y_mid, n) > abs_x) {
       y_max = y_mid;
-    else
+    } else {
       y_min = y_mid;
+    }
   }
   return sign(x) * static_cast<T>(y_min);
 }
