@@ -36,7 +36,7 @@ class Sieve {
     is_prime_[1] = false;
     // Use uint64_t to avoid multiplication overflow. Due to the time and space
     // complexity of the algorithm, uint64_t is large enough.
-    uint64_t num_limit_u64 = static_cast<uint64_t>(num_limit_);
+    uint64_t num_limit_u64 = numeric_cast<uint64_t>(num_limit_);
     for (uint64_t i = 2; i * i <= num_limit_u64; ++i) {
       if (!is_prime_[i])
         continue;
@@ -55,7 +55,7 @@ class Sieve {
   const T &get_limit() const { return num_limit_; }
 
   // Returns whether |number| is prime or not.
-  bool is_prime(const T &number) {
+  bool is_prime(const T &number) const {
     if (number < 0)
       return false;
     if (number > num_limit_)
