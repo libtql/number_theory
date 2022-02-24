@@ -171,7 +171,7 @@ class IncrementalEulerSieve {
   std::unique_ptr<EulerSieve<T>> sieve_;
 
   // Returns the maximum number (inclusive) we currently hold.
-  const T &get_limit_() const { return sieve_->get_limit(); }
+  T get_limit_() const { return sieve_->get_limit(); }
 
   // Extends the limit to at least cover |number|.
   void extend_(const T &number) {
