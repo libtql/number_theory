@@ -83,4 +83,28 @@ TEST(EulerSieveTest, MinPrimeFactor) {
   test_min_prime_factor<uint64_t>();
 }
 
+template <typename T>
+void test_incremental_euler_sieve() {
+  IncrementalEulerSieve<T> sieve;
+  EXPECT_EQ(sieve.min_prime_factor(T(10)), 2);
+  EXPECT_EQ(sieve.min_prime_factor(T(107)), 107);
+  if (std::numeric_limits<T>::is_signed) {
+    EXPECT_EQ(sieve.min_prime_factor(T(-27)), 3);
+    EXPECT_EQ(sieve.min_prime_factor(T(-17)), 17);
+  }
+  EXPECT_THROW(sieve.min_prime_factor(0), std::domain_error);
+  EXPECT_THROW(sieve.min_prime_factor(1), std::domain_error);
+}
+
+TEST(IncrementalEulerSieveTest, MinPrimeFactor) {
+  test_incremental_euler_sieve<int8_t>();
+  test_incremental_euler_sieve<int16_t>();
+  test_incremental_euler_sieve<int32_t>();
+  test_incremental_euler_sieve<int64_t>();
+  test_incremental_euler_sieve<uint8_t>();
+  test_incremental_euler_sieve<uint16_t>();
+  test_incremental_euler_sieve<uint32_t>();
+  test_incremental_euler_sieve<uint64_t>();
+}
+
 }  // namespace tql::number_theory

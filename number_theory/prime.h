@@ -157,7 +157,7 @@ template <typename T>
 class IncrementalEulerSieve {
  public:
   IncrementalEulerSieve(T num_limit = 2)
-      : sieve_(new EulerSieve(std::max<T>(num_limit, 2))) {}
+      : sieve_(new EulerSieve(std::max(num_limit, T(2)))) {}
 
   // Returns the minimum prime factor of the |number|.
   // Throws domain_error exception if minimum prime factor does not exist.
@@ -184,7 +184,7 @@ class IncrementalEulerSieve {
     if (current_limit > std::numeric_limits<T>::max() / 2) {
       new_limit = std::numeric_limits<T>::max();
     } else {
-      new_limit = std::max(number, current_limit * 2);
+      new_limit = std::max<T>(number, current_limit * 2);
     }
     // Release the old sieve and then allocate a new one.
     sieve_.reset();
