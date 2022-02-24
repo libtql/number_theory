@@ -156,7 +156,7 @@ class EulerSieve {
 template <typename T>
 class IncrementalEulerSieve {
  public:
-  IncrementalEulerSieve(T num_limit = 2)
+  explicit IncrementalEulerSieve(T num_limit = 2)
       : sieve_(new EulerSieve(std::max(num_limit, T(2)))) {}
 
   // Returns the minimum prime factor of the |number|.
