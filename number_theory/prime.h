@@ -214,6 +214,7 @@ constexpr bool is_prime(const T &number) {
 }  // namespace number_theory
 
 using number_theory::EulerSieve;
+using number_theory::IncrementalEulerSieve;
 using number_theory::Sieve;
 
 using number_theory::is_prime;
