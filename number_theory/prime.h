@@ -157,7 +157,7 @@ std::vector<std::pair<T, T>> coprime_pairs(const T &num_limit) {
   static_assert(std::numeric_limits<T>::is_integer,
                 "coprime_pairs argument |num_limit| must be an integer.");
   if (num_limit <= 0)
-    return std::vector<std::pair<T, T>>();
+    return {};
   uint64_t num_limit_u64 = numeric_cast<uint64_t>(num_limit);
   std::vector<std::pair<T, T>> pairs;
 
