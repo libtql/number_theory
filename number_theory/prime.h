@@ -163,7 +163,7 @@ std::vector<std::pair<T, T>> coprime_pairs(const T &num_limit) {
 
   // Append pair (x, y) to |pairs| if it is under the limit.
   // The caller should make sure x >= y.
-  auto add_pair = [&](uint64_t x, uint64_t y) {
+  auto add_pair = [&pairs, num_limit_u64](uint64_t x, uint64_t y) {
     if (x <= num_limit_u64) {
       pairs.emplace_back(static_cast<T>(x), static_cast<T>(y));
     }
