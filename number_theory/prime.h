@@ -169,6 +169,8 @@ std::vector<std::pair<T, T>> coprime_pairs(const T &num_limit) {
     }
   };
 
+  // The algorithm comes from
+  // https://web.archive.org/web/20220225121243/https://en.wikipedia.org/wiki/Coprime_integers
   add_pair(2, 1);
   add_pair(3, 1);
   size_t visited = 0;
