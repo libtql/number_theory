@@ -211,6 +211,7 @@ constexpr bool is_prime(const T &number) {
 using number_theory::EulerSieve;
 using number_theory::Sieve;
 
+using number_theory::coprime_pairs;
 using number_theory::is_prime;
 
 }  // namespace tql
