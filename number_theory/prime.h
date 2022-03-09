@@ -73,6 +73,7 @@ constexpr bool is_prime(const T &number) {
 
 }  // namespace number_theory
 
+using number_theory::coprime_pairs;
 using number_theory::is_prime;
 
 }  // namespace tql
